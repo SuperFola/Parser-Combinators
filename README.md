@@ -23,8 +23,10 @@ build/parser <filename>
 
 Subparsers:
 - [x] let, mut, set
+  - [ ] need to handle nodes as values
 - [x] del
-- [ ] condition
+- [x] condition
+  - [ ] need to handles nodes as condition and values
 - [ ] loop
 - [ ] import
 - [ ] begin block
