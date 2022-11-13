@@ -22,14 +22,13 @@ void ParserCombinators::next()
     m_sym = m_in[m_count];
     ++m_count;
 
-    // FIXME doing this HERE messes the row/col count by 1
-    // new line
-    if (m_sym == '\n')
+    int previous_sym = m_count > 0 ? m_in[m_count - 1] : 0;
+    if (previous_sym == '\n')
     {
         ++m_row;
         m_col = 0;
     }
-    else if (std::isprint(m_sym))
+    else if (std::isprint(previous_sym))
         ++m_col;
 }
 

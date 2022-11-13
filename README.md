@@ -43,5 +43,3 @@ At l @ 0:2
     2 | 
     3 | # test comment
 ```
-
-As you can see, it currently doesn't work.
