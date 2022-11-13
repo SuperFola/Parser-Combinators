@@ -168,7 +168,9 @@ private:
     int m_col;
     int m_sym;
 
-    // getting next character and changing the values of count/row/col/sym
+    /*
+        getting next character and changing the values of count/row/col/sym
+    */
     void next();
 
 protected:

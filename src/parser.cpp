@@ -13,7 +13,10 @@ void Parser::parse()
     {
         // parsing single line comments as instructions
         space();
-        comment();
+        if (!isEOF())
+            comment();
+        else
+            break;
         space();
 
         auto n = node();
@@ -40,7 +43,7 @@ std::optional<Node> Parser::node()
     std::vector<std::function<std::optional<Node>()>> methods = {
         [this]() -> std::optional<Node> { return letMutSet(); },
         [this]() -> std::optional<Node> { return del(); },
-        //[this]() -> std::optional<Node> { return condition(); },
+        [this]() -> std::optional<Node> { return condition(); },
         //[this]() -> std::optional<Node> { return loop(); },
         //[this]() -> std::optional<Node> { return import_(); },
         //[this]() -> std::optional<Node> { return block(); },
@@ -126,7 +129,38 @@ std::optional<Node> Parser::del()
 
 std::optional<Node> Parser::condition()
 {
-    return std::nullopt;
+    std::string keyword;
+    if (!name(&keyword))
+        return std::nullopt;
+    if (keyword != "if")
+        return std::nullopt;
+
+    space();
+
+    auto condition = atom();
+    if (!condition)
+        errorWithNextToken("If need a valid condition");  // TODO handle nodes
+
+    space();
+
+    auto value_if_true = atom();  // TODO handle nodes
+    if (!value_if_true)
+        errorWithNextToken("Expected a value");
+
+    space();
+
+    auto value_if_false = atom();  // TODO handle nodes
+    if (value_if_false)
+        space();
+
+    Node leaf(NodeType::List);
+    leaf.push_back(Node(NodeType::Keyword, keyword));
+    leaf.push_back(condition.value());
+    leaf.push_back(value_if_true.value());
+    if (value_if_false)
+        leaf.push_back(value_if_false.value());
+
+    return leaf;
 }
 
 std::optional<Node> Parser::loop()
