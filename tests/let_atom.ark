@@ -1,4 +1,9 @@
 (let aaaaaaa 12)
+(
+    mut   b 13)
+  (
+set c "")
+
 # test comment
 #comment###
 (

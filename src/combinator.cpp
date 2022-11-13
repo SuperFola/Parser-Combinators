@@ -69,7 +69,7 @@ bool ParserCombinators::expect(const CharPred& t, std::string* s)
 {
     // throw an error if the predicate couldn't consume the symbol
     if (!t(m_sym))
-        error("Expected", t.name);
+        error("Expected " + t.name, std::string(1, static_cast<char>(m_sym)));  // FIXME downcasting
     // otherwise, add it to the string and go to the next symbol
     if (s != nullptr)
         s->push_back(m_sym);
@@ -139,6 +139,16 @@ bool ParserCombinators::name(std::string* s)
     {
         // the next ones can be alphanumeric, or '_'
         while (accept(IsAlnum, s) || accept(IsChar('_'), s));
+        return true;
+    }
+    return false;
+}
+
+bool ParserCombinators::anyUntil(const CharPred& delim, std::string* s)
+{
+    if (accept(IsNot(delim), s))
+    {
+        while (accept(IsNot(delim), s));
         return true;
     }
     return false;

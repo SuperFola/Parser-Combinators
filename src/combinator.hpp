@@ -208,6 +208,7 @@ protected:
     bool number(std::string* s=nullptr);
     bool signedNumber(std::string* s=nullptr);
     bool name(std::string* s=nullptr);
+    bool anyUntil(const CharPred& delim, std::string* s=nullptr);
 };
 
 #endif

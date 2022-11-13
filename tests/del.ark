@@ -1,0 +1,15 @@
+(del a)
+
+(
+    del b
+)
+
+(
+    del
+    c
+)
+
+(
+del
+d
+)

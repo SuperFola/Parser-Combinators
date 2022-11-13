@@ -29,6 +29,8 @@ private:
     std::optional<Node> macro();
 
     std::optional<Node> atom();
+
+    void errorWithNextToken(const std::string& message);
 };
 
 #endif

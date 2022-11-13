@@ -37,47 +37,47 @@ bool Parser::comment()
 
 std::optional<Node> Parser::node()
 {
-    // save current position in buffer to be able to go back if needed
-    auto position = getCount();
+    std::vector<std::function<std::optional<Node>()>> methods = {
+        [this]() -> std::optional<Node> { return letMutSet(); },
+        [this]() -> std::optional<Node> { return del(); },
+        //[this]() -> std::optional<Node> { return condition(); },
+        //[this]() -> std::optional<Node> { return loop(); },
+        //[this]() -> std::optional<Node> { return import_(); },
+        //[this]() -> std::optional<Node> { return block(); },
+        //[this]() -> std::optional<Node> { return function(); },
+        //[this]() -> std::optional<Node> { return macro(); },
+    };
 
     if (!accept(IsChar('(')))
         return std::nullopt;
     space();
 
-    std::vector<std::function<std::optional<Node>()>> methods = {
-        [this]() -> std::optional<Node> { return letMutSet(); },
-        [this]() -> std::optional<Node> { return del(); },
-        [this]() -> std::optional<Node> { return condition(); },
-        [this]() -> std::optional<Node> { return loop(); },
-        [this]() -> std::optional<Node> { return import_(); },
-        [this]() -> std::optional<Node> { return block(); },
-        [this]() -> std::optional<Node> { return function(); },
-        [this]() -> std::optional<Node> { return macro(); },
-    };
+    // save current position in buffer to be able to go back if needed
+    auto position = getCount();
 
-    for (auto method : methods)
+    for (std::size_t i = 0, end = methods.size(); i < end; ++i)
     {
-        if (auto result = method(); result.has_value())
+        auto result = methods[i]();
+
+        if (result.has_value())
         {
             space();
             if (accept(IsChar(')')))
                 return result;
             else
-                error("Missing closing paren after node", ")");
+                errorWithNextToken("Missing closing paren after node");
         }
         else
             backtrack(position);
     }
 
-    return std::nullopt;
+    errorWithNextToken("Couldn't parse node");
+    return std::nullopt;  // will never reach
 }
 
 std::optional<Node> Parser::letMutSet()
 {
-    // eat the trailing white space
-    space();
-
-    std::string keyword = "";
+    std::string keyword;
     if (!name(&keyword))
         return std::nullopt;
     if (keyword != "let" && keyword != "mut" && keyword != "set")
@@ -85,17 +85,15 @@ std::optional<Node> Parser::letMutSet()
 
     space();
 
-    std::string symbol = "";
+    std::string symbol;
     if (!name(&symbol))
-        error(keyword + " needs a symbol", keyword);
+        errorWithNextToken(keyword + " needs a symbol");
 
     space();
 
     auto value = atom();
     if (!value)
-    {
-        error("Expected a value", symbol);
-    }
+        errorWithNextToken("Expected a value");
 
     Node leaf(NodeType::List);
     leaf.push_back(Node(NodeType::Keyword, keyword));
@@ -107,7 +105,23 @@ std::optional<Node> Parser::letMutSet()
 
 std::optional<Node> Parser::del()
 {
-    return std::nullopt;
+    std::string keyword;
+    if (!name(&keyword))
+        return std::nullopt;
+    if (keyword != "del")
+        return std::nullopt;
+
+    space();
+
+    std::string symbol;
+    if (!name(&symbol))
+        errorWithNextToken(keyword + " needs a symbol");
+
+    Node leaf(NodeType::List);
+    leaf.push_back(Node(NodeType::Keyword, keyword));
+    leaf.push_back(Node(NodeType::Symbol, symbol));
+
+    return leaf;
 }
 
 std::optional<Node> Parser::condition()
@@ -147,7 +161,7 @@ std::optional<Node> Parser::atom()
         [this]() -> std::optional<Node> {
             std::string res;
             if (signedNumber(&res))
-                return Node(std::stoi(res));
+                return Node(std::stoi(res));  // FIXME stoi?
             return std::nullopt;
         },
         // strings
@@ -185,4 +199,11 @@ std::optional<Node> Parser::atom()
     }
 
     return std::nullopt;
+}
+
+void Parser::errorWithNextToken(const std::string& message)
+{
+    std::string next_token;
+    anyUntil(IsInlineSpace, &next_token);
+    error(message, next_token);
 }

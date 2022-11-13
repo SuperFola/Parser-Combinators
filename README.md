@@ -23,7 +23,7 @@ build/parser <filename>
 
 Subparsers:
 - [x] let, mut, set
-- [ ] del
+- [x] del
 - [ ] condition
 - [ ] loop
 - [ ] import

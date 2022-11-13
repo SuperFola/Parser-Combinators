@@ -21,11 +21,13 @@ inline std::vector<std::string> splitString(const std::string& source, char sep)
     return output;
 }
 
-void makeContext(std::ostream& os, const std::string& code, std::size_t line, std::size_t col_start, std::size_t sym_size)
+void makeContext(std::ostream& os, const std::string& code, std::size_t line, std::size_t col_start, std::string exp)
 {
     std::vector<std::string> ctx = splitString(code, '\n');
 
-    std::size_t col_end = std::min<std::size_t>(col_start + sym_size, ctx[line].size());
+    // TODO use exp to do multiline hightlighting
+
+    std::size_t col_end = std::min<std::size_t>(col_start + exp.size(), ctx[line].size());
     std::size_t first = line >= 3 ? line - 3 : 0;
     std::size_t last = (line + 3) <= ctx.size() ? line + 3 : ctx.size();
 
@@ -74,7 +76,7 @@ int main(int argc, char* argv[])
             std::cout << "ERROR\n" << e.what() << "\n";
             std::cout << "At " << static_cast<char>(e.sym) << " @ " << e.row << ":" << e.col << std::endl;
 
-            makeContext(std::cout, code, e.row, e.col, 1);
+            makeContext(std::cout, code, e.row, e.col, e.exp);
         }
     }
 
