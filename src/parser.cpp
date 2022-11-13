@@ -12,29 +12,24 @@ void Parser::parse()
     while (!isEOF())
     {
         // parsing single line comments as instructions
-        while (comment())
-            endOfLine();
+        space();
+        comment();
         space();
 
         auto n = node();
-        if (!n)
-        {
-            error("error occured when parsing", "parser");
-            break;
-        }
-        else
-        {
+        if (n)
             m_ast.push_back(n.value());
-        }
     }
+
+    std::cout << m_ast << std::endl;
 }
 
 bool Parser::comment()
 {
-    inlineSpace();
     if (accept(IsChar('#')))
     {
         while (accept(IsNot(IsChar('\n'))));
+        accept(IsChar('\n'));
         return true;
     }
     return false;
@@ -46,7 +41,7 @@ std::optional<Node> Parser::node()
     auto position = getCount();
 
     if (!accept(IsChar('(')))
-        error("Expected an opening paren to create a new node", ")");
+        return std::nullopt;
     space();
 
     std::vector<std::function<std::optional<Node>()>> methods = {
@@ -182,7 +177,8 @@ std::optional<Node> Parser::atom()
 
     for (auto parser : parsers)
     {
-        if (auto result = parser(); result.has_value())
+        auto result = parser();
+        if (result.has_value())
             return result;
         else
             backtrack(pos);

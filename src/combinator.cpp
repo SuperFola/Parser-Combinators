@@ -22,6 +22,7 @@ void ParserCombinators::next()
     m_sym = m_in[m_count];
     ++m_count;
 
+    // FIXME doing this HERE messes the row/col count by 1
     // new line
     if (m_sym == '\n')
     {
@@ -36,7 +37,7 @@ void ParserCombinators::backtrack(std::size_t n)
 {
     int old_count = m_count;
     m_count = n;
-    m_sym = m_in[m_count];
+    m_sym = m_in[m_count - 1];
 
     m_row = 0;
     m_col = 0;
@@ -51,9 +52,6 @@ void ParserCombinators::backtrack(std::size_t n)
         else if (std::isprint(m_in[i]))
             ++m_col;
     }
-
-    std::cout << "backtracking from " << m_row << ":" << m_col << " (" << m_count << ")" << std::endl;
-    std::cout << "    to " << m_row << ":" << m_col << " (" << m_count << ")" << std::endl;
 }
 
 bool ParserCombinators::accept(const CharPred& t, std::string* s)

@@ -51,3 +51,50 @@ void Node::push_back(const Node& n)
 {
     std::get<std::vector<Node>>(m_value).push_back(n);
 }
+
+std::ostream& operator<<(std::ostream& os, const Node& node)
+{
+    switch (node.nodeType())
+    {
+        case NodeType::Symbol:
+            os << "Symbol:" << node.string();
+            break;
+
+        case NodeType::Capture:
+            os << "Capture:" << node.string();
+            break;
+
+        case NodeType::GetField:
+            os << "GetField:" << node.string();
+            break;
+
+        case NodeType::Keyword:
+            os << "Keyword:" << node.string();
+            break;
+
+        case NodeType::String:
+            os << "String:" << node.string();
+            break;
+
+        case NodeType::Number:
+            os << "Number:" << node.number();
+            break;
+
+        case NodeType::List:
+            os << "( ";
+            for (std::size_t i = 0, end = node.list().size(); i < end; ++i)
+                os << node.list()[i] << " ";
+            os << ")";
+            break;
+
+        case NodeType::Spread:
+            os << "Spread:" << node.string();
+            break;
+
+        case NodeType::Unused:
+            os << "Unused:" << node.string();
+            break;
+
+    }
+    return os;
+}

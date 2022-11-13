@@ -4,6 +4,7 @@
 #include <variant>
 #include <string>
 #include <vector>
+#include <ostream>
 
 enum class NodeType
 {
@@ -14,7 +15,6 @@ enum class NodeType
     String,
     Number,
     List,
-    Macro,
     Spread,
     Unused
 };
@@ -31,13 +31,15 @@ public:
     Node(int i);
     Node(const std::vector<Node>& n);
 
-    const inline NodeType nodeType() { return m_type; }
+    const inline NodeType nodeType() const { return m_type; }
 
-    double number() { return std::get<double>(m_value); }
-    const std::string& string() { return std::get<std::string>(m_value); }
-    const std::vector<Node>& list() { return std::get<std::vector<Node>>(m_value); }
+    double number() const { return std::get<double>(m_value); }
+    const std::string& string() const { return std::get<std::string>(m_value); }
+    const std::vector<Node>& list() const { return std::get<std::vector<Node>>(m_value); }
 
     void push_back(const Node& n);
+
+    friend std::ostream& operator<<(std::ostream& os, const Node& node);
 
 private:
     Value m_value;
