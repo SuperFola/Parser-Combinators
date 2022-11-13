@@ -2,6 +2,7 @@
 #include "combinator.hpp"
 
 #include <iostream>
+#include <functional>
 
 Parser::Parser(const std::string& code) :
     m_ast(NodeType::List), ParserCombinators(code)
