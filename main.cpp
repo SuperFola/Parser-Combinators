@@ -1,8 +1,55 @@
 #include "parser.hpp"
 
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <fstream>
+
+inline std::vector<std::string> splitString(const std::string& source, char sep)
+{
+    std::vector<std::string> output;
+    output.emplace_back();
+
+    for (char c : source)
+    {
+        if (c != sep)
+            output.back() += c;
+        else
+            output.emplace_back();  // add empty string
+    }
+
+    return output;
+}
+
+void makeContext(std::ostream& os, const std::string& code, std::size_t line, std::size_t col_start, std::size_t sym_size)
+{
+    std::vector<std::string> ctx = splitString(code, '\n');
+
+    std::size_t col_end = std::min<std::size_t>(col_start + sym_size, ctx[line].size());
+    std::size_t first = line >= 3 ? line - 3 : 0;
+    std::size_t last = (line + 3) <= ctx.size() ? line + 3 : ctx.size();
+
+    for (std::size_t loop = first; loop < last; ++loop)
+    {
+        std::string current_line = ctx[loop];
+        os << std::setw(5) << (loop + 1) << " | " << current_line << "\n";
+
+        if (loop == line)
+        {
+            os << "      | ";
+
+            // padding of spaces
+            for (std::size_t i = 0; i < col_start; ++i)
+                os << " ";
+
+            // underline the error
+            for (std::size_t i = col_start; i < col_end; ++i)
+                os << "^";
+
+            os << "\n";
+        }
+    }
+}
 
 int main(int argc, char* argv[])
 {
@@ -21,7 +68,14 @@ int main(int argc, char* argv[])
     {
         std::string code((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
         Parser parser(code);
-        parser.parse();
+        try {
+            parser.parse();
+        } catch (const ParseError& e) {
+            std::cout << "ERROR\n" << e.what() << "\n";
+            std::cout << "At " << static_cast<char>(e.sym) << " @ " << e.row << ":" << e.col << std::endl;
+
+            makeContext(std::cout, code, e.row, e.col, 1);
+        }
     }
 
     return 0;

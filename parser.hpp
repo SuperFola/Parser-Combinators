@@ -19,8 +19,18 @@ private:
 
     bool comment();
     std::optional<Node> node();
+    std::optional<Node> letMutSet();
+    std::optional<Node> del();
+    std::optional<Node> condition();
+    std::optional<Node> loop();
+    std::optional<Node> import_();
+    std::optional<Node> block();
+    std::optional<Node> function();
+    std::optional<Node> macro();
 
-    inline void backtrack(std::size_t count) { back(getCount() - count + 1); }
+    std::optional<Node> atom();
+
+    inline void backtrack(std::size_t pos) { back(getCount() - pos + 1); }
 };
 
 #endif

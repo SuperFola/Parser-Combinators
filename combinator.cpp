@@ -3,7 +3,7 @@
 #include <iostream>
 
 ParserCombinators::ParserCombinators(const std::string& s) :
-    m_in(s), m_count(0), m_row(1), m_col(1)
+    m_in(s), m_count(0), m_row(0), m_col(0)
 {
     // if the input string is empty, raise an error
     if (s.size() == 0)
@@ -67,7 +67,7 @@ bool ParserCombinators::accept(const CharPred& t, std::string* s)
     return true;
 }
 
-bool ParserCombinators::except(const CharPred& t, std::string* s)
+bool ParserCombinators::expect(const CharPred& t, std::string* s)
 {
     // throw an error if the predicate couldn't consume the symbol
     if (!t(m_sym))

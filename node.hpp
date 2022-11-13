@@ -14,7 +14,6 @@ enum class NodeType
     String,
     Number,
     List,
-    Closure,
     Macro,
     Spread,
     Unused

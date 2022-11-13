@@ -2,7 +2,30 @@
 
 Node::Node(NodeType type) :
     m_type(type)
-{}
+{
+    switch (m_type)
+    {
+        case NodeType::List:
+            m_value = std::vector<Node>();
+            break;
+
+        case NodeType::Symbol:
+        case NodeType::Capture:
+        case NodeType::GetField:
+        case NodeType::Keyword:
+        case NodeType::String:
+        case NodeType::Spread:
+            m_value = "";
+            break;
+
+        case NodeType::Number:
+            m_value = 0.0;
+            break;
+
+        default:
+            break;
+    }
+}
 
 Node::Node(NodeType type, const std::string& s) :
     m_value(s), m_type(type)

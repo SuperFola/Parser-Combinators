@@ -199,7 +199,7 @@ protected:
         Add the symbol to the given string (if there was one) and call next().
         Throw a ParseError if it couldn't.
     */
-    bool except(const CharPred& t, std::string* s=nullptr);
+    bool expect(const CharPred& t, std::string* s=nullptr);
 
     // basic parsers
     bool space(std::string* s=nullptr);
