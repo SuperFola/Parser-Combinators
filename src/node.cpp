@@ -94,7 +94,6 @@ std::ostream& operator<<(std::ostream& os, const Node& node)
         case NodeType::Unused:
             os << "Unused:" << node.string();
             break;
-
     }
     return os;
 }

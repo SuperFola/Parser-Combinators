@@ -70,10 +70,14 @@ int main(int argc, char* argv[])
     {
         std::string code((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
         Parser parser(code);
-        try {
+        try
+        {
             parser.parse();
-        } catch (const ParseError& e) {
-            std::cout << "ERROR\n" << e.what() << "\n";
+        }
+        catch (const ParseError& e)
+        {
+            std::cout << "ERROR\n"
+                      << e.what() << "\n";
             std::cout << "At " << static_cast<char>(e.sym) << " @ " << e.row << ":" << e.col << std::endl;
 
             makeContext(std::cout, code, e.row, e.col, e.exp);

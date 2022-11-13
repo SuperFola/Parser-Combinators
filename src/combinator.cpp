@@ -84,7 +84,8 @@ bool ParserCombinators::space(std::string* s)
         if (s != nullptr)
             s->push_back(' ');
         // loop while there are still ' ' to consume
-        while (accept(IsSpace));
+        while (accept(IsSpace))
+            ;
         return true;
     }
     return false;
@@ -97,7 +98,8 @@ bool ParserCombinators::inlineSpace(std::string* s)
         if (s != nullptr)
             s->push_back(' ');
         // loop while there are still ' ' to consume
-        while (accept(IsInlineSpace));
+        while (accept(IsInlineSpace))
+            ;
         return true;
     }
     return false;
@@ -109,7 +111,8 @@ bool ParserCombinators::endOfLine(std::string* s)
     {
         if (s != nullptr)
             s->push_back('\n');
-        while ((accept(IsChar('\r')) || true) && accept(IsChar('\n')));
+        while ((accept(IsChar('\r')) || true) && accept(IsChar('\n')))
+            ;
         return true;
     }
     return false;
@@ -121,7 +124,8 @@ bool ParserCombinators::number(std::string* s)
     {
         // consume all the digits available,
         // stop when the symbole isn't a digit anymore
-        while (accept(IsDigit, s));
+        while (accept(IsDigit, s))
+            ;
         return true;
     }
     return false;
@@ -138,7 +142,8 @@ bool ParserCombinators::name(std::string* s)
     if (accept(IsAlpha, s))
     {
         // the next ones can be alphanumeric, or '_'
-        while (accept(IsAlnum, s) || accept(IsChar('_'), s));
+        while (accept(IsAlnum, s) || accept(IsChar('_'), s))
+            ;
         return true;
     }
     return false;
@@ -148,7 +153,8 @@ bool ParserCombinators::anyUntil(const CharPred& delim, std::string* s)
 {
     if (accept(IsNot(delim), s))
     {
-        while (accept(IsNot(delim), s));
+        while (accept(IsNot(delim), s))
+            ;
         return true;
     }
     return false;

@@ -31,7 +31,8 @@ bool Parser::comment()
 {
     if (accept(IsChar('#')))
     {
-        while (accept(IsNot(IsChar('\n'))));
+        while (accept(IsNot(IsChar('\n'))))
+            ;
         accept(IsChar('\n'));
         return true;
     }
@@ -41,9 +42,15 @@ bool Parser::comment()
 std::optional<Node> Parser::node()
 {
     std::vector<std::function<std::optional<Node>()>> methods = {
-        [this]() -> std::optional<Node> { return letMutSet(); },
-        [this]() -> std::optional<Node> { return del(); },
-        [this]() -> std::optional<Node> { return condition(); },
+        [this]() -> std::optional<Node> {
+            return letMutSet();
+        },
+        [this]() -> std::optional<Node> {
+            return del();
+        },
+        [this]() -> std::optional<Node> {
+            return condition();
+        },
         //[this]() -> std::optional<Node> { return loop(); },
         //[this]() -> std::optional<Node> { return import_(); },
         //[this]() -> std::optional<Node> { return block(); },
@@ -203,7 +210,8 @@ std::optional<Node> Parser::atom()
             std::string res;
             if (accept(IsChar('"')))
             {
-                while (accept(IsNot(IsChar('"')), &res));
+                while (accept(IsNot(IsChar('"')), &res))
+                    ;
                 expect(IsChar('"'));
 
                 return Node(NodeType::String, res);
