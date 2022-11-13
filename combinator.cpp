@@ -92,6 +92,31 @@ bool ParserCombinators::space(std::string* s)
     return false;
 }
 
+bool ParserCombinators::inlineSpace(std::string* s)
+{
+    if (accept(IsInlineSpace))
+    {
+        if (s != nullptr)
+            s->push_back(' ');
+        // loop while there are still ' ' to consume
+        while (accept(IsInlineSpace));
+        return true;
+    }
+    return false;
+}
+
+bool ParserCombinators::endOfLine(std::string* s)
+{
+    if ((accept(IsChar('\r')) || true) && accept(IsChar('\n')))
+    {
+        if (s != nullptr)
+            s->push_back('\n');
+        while ((accept(IsChar('\r')) || true) && accept(IsChar('\n')));
+        return true;
+    }
+    return false;
+}
+
 bool ParserCombinators::number(std::string* s)
 {
     if (accept(IsDigit, s))

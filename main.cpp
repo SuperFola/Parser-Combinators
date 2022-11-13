@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <fstream>
 
 int main(int argc, char* argv[])
 {
@@ -12,6 +13,16 @@ int main(int argc, char* argv[])
     }
 
     std::string filename(argv[1]);
+
+    std::ifstream stream(filename);
+    if (!stream.is_open())
+        std::cout << "Failed to open " << filename << '\n';
+    else
+    {
+        std::string code((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
+        Parser parser(code);
+        parser.parse();
+    }
 
     return 0;
 }

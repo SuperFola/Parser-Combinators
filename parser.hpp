@@ -2,8 +2,10 @@
 #define PARSER_HPP
 
 #include "combinator.hpp"
+#include "node.hpp"
 
 #include <string>
+#include <optional>
 
 class Parser : public ParserCombinators
 {
@@ -13,6 +15,12 @@ public:
     void parse();
 
 private:
+    Node m_ast;
+
+    bool comment();
+    std::optional<Node> node();
+
+    inline void backtrack(std::size_t count) { back(getCount() - count + 1); }
 };
 
 #endif
