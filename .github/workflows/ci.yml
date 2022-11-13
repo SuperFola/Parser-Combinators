@@ -188,7 +188,7 @@ jobs:
         chmod u+x build/parser
 
     - name: Tests
-      if: steps.download.outcome == 'success' && steps.download-artifact.outcome == 'success'
+      if: steps.download.outcome == 'success'
       shell: bash
       run: |
         export ASAN_OPTIONS=use_odr_indicator=1
