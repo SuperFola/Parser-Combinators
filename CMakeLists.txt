@@ -2,7 +2,12 @@ cmake_minimum_required(VERSION 3.24)
 
 project(parser)
 
-add_executable(parser main.cpp combinator.cpp node.cpp parser.cpp)
+add_executable(parser
+    src/main.cpp
+    src/combinator.cpp
+    src/node.cpp
+    src/parser.cpp
+)
 
 set_target_properties(
     ${PROJECT_NAME}

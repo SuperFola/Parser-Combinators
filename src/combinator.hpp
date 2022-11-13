@@ -1,5 +1,5 @@
-#ifndef COMBINATOR_HPP
-#define COMBINATOR_HPP
+#ifndef SRC_COMBINATOR_HPP
+#define SRC_COMBINATOR_HPP
 
 #include <string>
 #include <exception>
