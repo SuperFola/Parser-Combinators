@@ -14,12 +14,12 @@ void Parser::parse()
         // parsing single line comments as instructions
         while (comment())
             endOfLine();
+        space();
 
         auto n = node();
         if (!n)
         {
-            // TODO error handling
-            std::cout << "error occured when parsing" << std::endl;
+            error("error occured when parsing", "parser");
             break;
         }
         else
@@ -46,35 +46,29 @@ std::optional<Node> Parser::node()
     auto position = getCount();
 
     if (!accept(IsChar('(')))
-    {
-        std::cout << "Expected an opening paren to create a new node" << std::endl;
-        return std::nullopt;
-    }
+        error("Expected an opening paren to create a new node", ")");
     space();
 
     std::vector<std::function<std::optional<Node>()>> methods = {
-        std::bind(&Parser::letMutSet, *this),
-        std::bind(&Parser::del, *this),
-        std::bind(&Parser::condition, *this),
-        std::bind(&Parser::loop, *this),
-        std::bind(&Parser::import_, *this),
-        std::bind(&Parser::block, *this),
-        std::bind(&Parser::function, *this),
-        std::bind(&Parser::macro, *this),
+        [this]() -> std::optional<Node> { return letMutSet(); },
+        [this]() -> std::optional<Node> { return del(); },
+        [this]() -> std::optional<Node> { return condition(); },
+        [this]() -> std::optional<Node> { return loop(); },
+        [this]() -> std::optional<Node> { return import_(); },
+        [this]() -> std::optional<Node> { return block(); },
+        [this]() -> std::optional<Node> { return function(); },
+        [this]() -> std::optional<Node> { return macro(); },
     };
 
     for (auto method : methods)
     {
-        if (auto result = method())
+        if (auto result = method(); result.has_value())
         {
             space();
             if (accept(IsChar(')')))
                 return result;
             else
-            {
                 error("Missing closing paren after node", ")");
-                return std::nullopt;
-            }
         }
         else
             backtrack(position);
@@ -98,16 +92,14 @@ std::optional<Node> Parser::letMutSet()
 
     std::string symbol = "";
     if (!name(&symbol))
-        return std::nullopt;
+        error(keyword + " needs a symbol", keyword);
 
     space();
 
     auto value = atom();
     if (!value)
     {
-        // TODO throw exception
-        std::cout << "Expected a value" << std::endl;
-        return std::nullopt;
+        error("Expected a value", symbol);
     }
 
     Node leaf(NodeType::List);
@@ -190,7 +182,7 @@ std::optional<Node> Parser::atom()
 
     for (auto parser : parsers)
     {
-        if (auto result = parser())
+        if (auto result = parser(); result.has_value())
             return result;
         else
             backtrack(pos);

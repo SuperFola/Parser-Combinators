@@ -26,33 +26,34 @@ void ParserCombinators::next()
     if (m_sym == '\n')
     {
         ++m_row;
-        m_col = 1;
+        m_col = 0;
     }
     else if (std::isprint(m_sym))
-    {
         ++m_col;
-    }
 }
 
-void ParserCombinators::back(std::size_t n)
+void ParserCombinators::backtrack(std::size_t n)
 {
-    // going back into the string and adjusting the rows count
-    for (std::size_t i=0; i < n && m_count > 0; i++)
-    {
-        m_sym = m_in[m_count];
-        --m_count;
+    int old_count = m_count;
+    m_count = n;
+    m_sym = m_in[m_count];
 
-        if (m_sym == '\n')
-            --m_row;
+    m_row = 0;
+    m_col = 0;
+    // adjust the row/col count (this is going to be VERY inefficient)
+    for (std::size_t i = 0; i < n; ++i)
+    {
+        if (m_in[i] == '\n')
+        {
+            ++m_row;
+            m_col = 0;
+        }
+        else if (std::isprint(m_in[i]))
+            ++m_col;
     }
 
-    // adjusting the columns count
-    int count = m_count;
-    while (m_in[count] != '\n' && count != 0)
-        --count;
-    m_col = m_count - count;
-
-    next();  // getting the 'new' current character
+    std::cout << "backtracking from " << m_row << ":" << m_col << " (" << m_count << ")" << std::endl;
+    std::cout << "    to " << m_row << ":" << m_col << " (" << m_count << ")" << std::endl;
 }
 
 bool ParserCombinators::accept(const CharPred& t, std::string* s)

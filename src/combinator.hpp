@@ -184,7 +184,7 @@ protected:
     inline std::size_t getSize() { return m_in.size(); }
     inline bool isEOF() { return m_count >= m_in.size() || m_sym == '\0'; }
 
-    void back(std::size_t n);
+    void backtrack(std::size_t n);
 
     /*
         Function to use and check if a Character Predicate was able to parse

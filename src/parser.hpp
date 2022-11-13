@@ -29,8 +29,6 @@ private:
     std::optional<Node> macro();
 
     std::optional<Node> atom();
-
-    inline void backtrack(std::size_t pos) { back(getCount() - pos + 1); }
 };
 
 #endif
