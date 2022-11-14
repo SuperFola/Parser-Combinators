@@ -25,7 +25,8 @@ void Parser::parse()
             m_ast.push_back(n.value());
     }
 
-    std::cout << m_ast << std::endl;
+    for (auto block : m_ast.list())
+        std::cout << block << "\n";
 }
 
 bool Parser::comment()

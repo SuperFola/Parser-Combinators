@@ -26,12 +26,13 @@ failed=0
 for f in ./*.ark; do
     output=$($cmd $f --lib ../../lib 2>&1)
     expected=$(cat ${f%.*}.expected)
+    diff=$(diff <(echo "$output") <(echo "$expected"))
 
-    if [[ $(echo $output | grep "$expected") == "" ]]; then
+    if [[ $diff != "" ]]; then
         echo -e "${Red}FAILED${Reset} ${f%.*}"
         ((failed=failed+1))
         echo -e "    ${Yellow}Output${Reset}:"
-        echo $output
+        echo "$diff"
     else
         echo -e "${Green}PASSED${Reset} ${f%.*}"
         ((passed=passed+1))
