@@ -35,7 +35,8 @@ Subparsers:
 - [ ] begin block
 - [x] function
   - [ ] handle nodes as body
-- [ ] macro
+- [x] macro
+  - [ ] handle nodes as body
 - [x] atom (number, string, boolean, nil)
 - [x] comment
 

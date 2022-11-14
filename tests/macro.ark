@@ -1,0 +1,10 @@
+(macro a 1)
+(macro b () 2)
+(macro
+c
+(
+d
+e
+)
+3)
+(macro f(g)4)

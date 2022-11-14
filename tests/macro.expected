@@ -1,0 +1,4 @@
+( Keyword:macro Symbol:a Number:1 )
+( Keyword:macro Symbol:b ( ) Number:2 )
+( Keyword:macro Symbol:c ( Symbol:d Symbol:e ) Number:3 )
+( Keyword:macro Symbol:f ( Symbol:g ) Number:4 )
