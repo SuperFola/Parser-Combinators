@@ -53,7 +53,9 @@ std::optional<Node> Parser::node()
         [this]() -> std::optional<Node> {
             return condition();
         },
-        //[this]() -> std::optional<Node> { return loop(); },
+        [this]() -> std::optional<Node> {
+            return loop();
+        },
         //[this]() -> std::optional<Node> { return import_(); },
         //[this]() -> std::optional<Node> { return block(); },
         [this]() -> std::optional<Node> {
@@ -176,7 +178,30 @@ std::optional<Node> Parser::condition()
 
 std::optional<Node> Parser::loop()
 {
-    return std::nullopt;
+    std::string keyword;
+    if (!name(&keyword))
+        return std::nullopt;
+    if (keyword != "while")
+        return std::nullopt;
+
+    space();
+
+    auto condition = atom();
+    if (!condition)
+        errorWithNextToken("While need a valid condition");  // TODO handle nodes
+
+    space();
+
+    auto body = atom();  // TODO handle nodes
+    if (!body)
+        errorWithNextToken("Expected a value");
+
+    Node leaf(NodeType::List);
+    leaf.push_back(Node(NodeType::Keyword, keyword));
+    leaf.push_back(condition.value());
+    leaf.push_back(body.value());
+
+    return leaf;
 }
 
 std::optional<Node> Parser::import_()
