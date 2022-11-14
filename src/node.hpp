@@ -31,7 +31,7 @@ public:
     Node(int i);
     Node(const std::vector<Node>& n);
 
-    const inline NodeType nodeType() const { return m_type; }
+    inline NodeType nodeType() const { return m_type; }
 
     double number() const { return std::get<double>(m_value); }
     const std::string& string() const { return std::get<std::string>(m_value); }

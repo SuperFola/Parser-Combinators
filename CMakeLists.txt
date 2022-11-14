@@ -12,6 +12,12 @@ add_executable(parser
     src/parser.cpp
 )
 
+if (MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE /W4)
+else()
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
+endif()
+
 if (ENABLE_SANITIZERS)
     message(STATUS "Enabling address sanitizer and undefined behavior sanitizer")
     add_address_sanitizer()

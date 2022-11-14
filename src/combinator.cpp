@@ -34,7 +34,6 @@ void ParserCombinators::next()
 
 void ParserCombinators::backtrack(std::size_t n)
 {
-    int old_count = m_count;
     m_count = n;
     m_sym = m_in[m_count - 1];
 

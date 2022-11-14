@@ -5,7 +5,7 @@
 #include <functional>
 
 Parser::Parser(const std::string& code) :
-    m_ast(NodeType::List), ParserCombinators(code)
+    ParserCombinators(code), m_ast(NodeType::List)
 {}
 
 void Parser::parse()
@@ -309,7 +309,8 @@ std::optional<Node> Parser::macro()
         leaf.push_back(args.value());
     leaf.push_back(value.value());
 
-    return leaf;}
+    return leaf;
+}
 
 std::optional<Node> Parser::atom()
 {

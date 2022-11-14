@@ -103,7 +103,7 @@ inline struct IsPrint : public CharPred
 struct IsChar : public CharPred
 {
     explicit IsChar(const char c) :
-        m_k(c), CharPred("'" + std::string(1, c) + "'")
+        CharPred("'" + std::string(1, c) + "'"), m_k(c)
     {}
     virtual bool operator()(const int c) const override
     {
@@ -117,7 +117,7 @@ private:
 struct IsEither : public CharPred
 {
     explicit IsEither(const CharPred& a, const CharPred& b) :
-        m_a(a), m_b(b), CharPred("(" + a.name + " | " + b.name + ")")
+        CharPred("(" + a.name + " | " + b.name + ")"), m_a(a), m_b(b)
     {}
     virtual bool operator()(const int c) const override
     {
@@ -132,7 +132,7 @@ private:
 struct IsNot : public CharPred
 {
     explicit IsNot(const CharPred& a) :
-        m_a(a), CharPred("~" + a.name)
+        CharPred("~" + a.name), m_a(a)
     {}
     virtual bool operator()(const int c) const override
     {
@@ -147,7 +147,7 @@ inline struct IsAny : public CharPred
 {
     IsAny() :
         CharPred("any") {}
-    virtual bool operator()(const int c) const override
+    virtual bool operator()(const int) const override
     {
         return true;
     }
@@ -195,7 +195,7 @@ protected:
     inline int getRow() { return m_row; }
     inline int getCount() { return m_count; }
     inline std::size_t getSize() { return m_in.size(); }
-    inline bool isEOF() { return m_count >= m_in.size() || m_sym == '\0'; }
+    inline bool isEOF() { return static_cast<std::size_t>(m_count) >= m_in.size() || m_sym == '\0'; }
 
     void backtrack(std::size_t n);
 
