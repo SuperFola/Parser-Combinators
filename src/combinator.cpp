@@ -158,3 +158,20 @@ bool ParserCombinators::anyUntil(const CharPred& delim, std::string* s)
     }
     return false;
 }
+
+bool ParserCombinators::oneOf(std::initializer_list<std::string> words, std::string* s)
+{
+    std::string buffer;
+    if (!name(&buffer))
+        return false;
+
+    if (s)
+        *s = buffer;
+
+    for (auto word : words)
+    {
+        if (word == buffer)
+            return true;
+    }
+    return false;
+}

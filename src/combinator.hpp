@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <utility>
 #include <cctype>
+#include <initializer_list>
 
 // Base for all the Character Predicates used by the parsers
 // Those act as 'rules' for the parsers
@@ -222,6 +223,8 @@ protected:
     bool signedNumber(std::string* s = nullptr);
     bool name(std::string* s = nullptr);
     bool anyUntil(const CharPred& delim, std::string* s = nullptr);
+
+    bool oneOf(std::initializer_list<std::string> words, std::string* s = nullptr);
 };
 
 #endif
