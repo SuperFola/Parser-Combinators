@@ -17,15 +17,15 @@ struct CharPred
 
     CharPred(const std::string& n) :
         name(n) {}
-    // the int c represents a character
-    virtual bool operator()(const int c) const = 0;
+
+    virtual bool operator()(const char c) const = 0;
 };
 
 inline struct IsSpace : public CharPred
 {
     IsSpace() :
         CharPred("space") {}
-    virtual bool operator()(const int c) const override
+    virtual bool operator()(const char c) const override
     {
         return std::isspace(c) != 0;
     }
@@ -35,7 +35,7 @@ inline struct IsInlineSpace : public CharPred
 {
     IsInlineSpace() :
         CharPred("inline space") {}
-    virtual bool operator()(const int c) const override
+    virtual bool operator()(const char c) const override
     {
         return (std::isspace(c) != 0) && (c != '\n') && (c != '\r');
     }
@@ -45,7 +45,7 @@ inline struct IsDigit : public CharPred
 {
     IsDigit() :
         CharPred("digit") {}
-    virtual bool operator()(const int c) const override
+    virtual bool operator()(const char c) const override
     {
         return std::isdigit(c) != 0;
     }
@@ -55,7 +55,7 @@ inline struct IsUpper : public CharPred
 {
     IsUpper() :
         CharPred("uppercase") {}
-    virtual bool operator()(const int c) const override
+    virtual bool operator()(const char c) const override
     {
         return std::isupper(c) != 0;
     }
@@ -65,7 +65,7 @@ inline struct IsLower : public CharPred
 {
     IsLower() :
         CharPred("lowercase") {}
-    virtual bool operator()(const int c) const override
+    virtual bool operator()(const char c) const override
     {
         return std::islower(c) != 0;
     }
@@ -75,7 +75,7 @@ inline struct IsAlpha : public CharPred
 {
     IsAlpha() :
         CharPred("alphabetic") {}
-    virtual bool operator()(const int c) const override
+    virtual bool operator()(const char c) const override
     {
         return std::isalpha(c) != 0;
     }
@@ -85,7 +85,7 @@ inline struct IsAlnum : public CharPred
 {
     IsAlnum() :
         CharPred("alphanumeric") {}
-    virtual bool operator()(const int c) const override
+    virtual bool operator()(const char c) const override
     {
         return std::isalnum(c) != 0;
     }
@@ -95,7 +95,7 @@ inline struct IsPrint : public CharPred
 {
     IsPrint() :
         CharPred("printable") {}
-    virtual bool operator()(const int c) const override
+    virtual bool operator()(const char c) const override
     {
         return std::isprint(c) != 0;
     }
@@ -106,13 +106,13 @@ struct IsChar : public CharPred
     explicit IsChar(const char c) :
         CharPred("'" + std::string(1, c) + "'"), m_k(c)
     {}
-    virtual bool operator()(const int c) const override
+    virtual bool operator()(const char c) const override
     {
         return m_k == c;
     }
 
 private:
-    const int m_k;
+    const char m_k;
 };
 
 struct IsEither : public CharPred
@@ -120,7 +120,7 @@ struct IsEither : public CharPred
     explicit IsEither(const CharPred& a, const CharPred& b) :
         CharPred("(" + a.name + " | " + b.name + ")"), m_a(a), m_b(b)
     {}
-    virtual bool operator()(const int c) const override
+    virtual bool operator()(const char c) const override
     {
         return m_a(c) || m_b(c);
     }
@@ -135,7 +135,7 @@ struct IsNot : public CharPred
     explicit IsNot(const CharPred& a) :
         CharPred("~" + a.name), m_a(a)
     {}
-    virtual bool operator()(const int c) const override
+    virtual bool operator()(const char c) const override
     {
         return !m_a(c);
     }
@@ -148,7 +148,7 @@ inline struct IsAny : public CharPred
 {
     IsAny() :
         CharPred("any") {}
-    virtual bool operator()(const int) const override
+    virtual bool operator()(const char) const override
     {
         return true;
     }
@@ -158,13 +158,13 @@ const IsChar IsMinus('-');
 
 struct ParseError : public std::runtime_error
 {
-    const int row;
-    const int col;
-    const std::string exp;
-    const int sym;
+    const std::size_t line;
+    const std::size_t col;
+    const std::string expr;
+    const char symbol;
 
-    ParseError(const std::string& what, int row, int col, std::string exp, int sym) :
-        std::runtime_error(what), row(row), col(col), exp(std::move(exp)), sym(sym)
+    ParseError(const std::string& what, std::size_t lineNum, std::size_t column, std::string exp, char sym) :
+        std::runtime_error(what), line(lineNum), col(column), expr(std::move(exp)), symbol(sym)
     {}
 };
 
@@ -175,10 +175,10 @@ public:
 
 private:
     std::string m_in;
-    int m_count;
-    int m_row;
-    int m_col;
-    int m_sym;
+    std::size_t m_count;
+    std::size_t m_row;
+    std::size_t m_col;
+    char m_sym;
 
     /*
         getting next character and changing the values of count/row/col/sym
@@ -192,11 +192,11 @@ protected:
     }
 
     // basic getters
-    inline int getCol() { return m_col; }
-    inline int getRow() { return m_row; }
-    inline int getCount() { return m_count; }
+    inline std::size_t getCol() { return m_col; }
+    inline std::size_t getRow() { return m_row; }
+    inline std::size_t getCount() { return m_count; }
     inline std::size_t getSize() { return m_in.size(); }
-    inline bool isEOF() { return static_cast<std::size_t>(m_count) >= m_in.size() || m_sym == '\0'; }
+    inline bool isEOF() { return m_count >= m_in.size() || m_sym == '\0'; }
 
     void backtrack(std::size_t n);
 

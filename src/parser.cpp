@@ -68,8 +68,8 @@ std::optional<Node> Parser::node()
         },
     };
 
-    if (!accept(IsChar('(')))   // FIXME can not implement import nor begin if this stays here
-                                // TODO make a node parser wrapper, taking charge of the surrounding ()
+    if (!accept(IsChar('(')))  // FIXME can not implement import nor begin if this stays here
+                               // TODO make a node parser wrapper, taking charge of the surrounding ()
         return std::nullopt;
     space();
 
@@ -99,7 +99,7 @@ std::optional<Node> Parser::node()
 std::optional<Node> Parser::letMutSet()
 {
     std::string keyword;
-    if (!oneOf({"let", "mut", "set"}, &keyword))
+    if (!oneOf({ "let", "mut", "set" }, &keyword))
         return std::nullopt;
 
     space();
@@ -125,7 +125,7 @@ std::optional<Node> Parser::letMutSet()
 std::optional<Node> Parser::del()
 {
     std::string keyword;
-    if (!oneOf({"del"}, &keyword))
+    if (!oneOf({ "del" }, &keyword))
         return std::nullopt;
 
     space();
@@ -144,7 +144,7 @@ std::optional<Node> Parser::del()
 std::optional<Node> Parser::condition()
 {
     std::string keyword;
-    if (!oneOf({"if"}, &keyword))
+    if (!oneOf({ "if" }, &keyword))
         return std::nullopt;
 
     space();
@@ -178,7 +178,7 @@ std::optional<Node> Parser::condition()
 std::optional<Node> Parser::loop()
 {
     std::string keyword;
-    if (!oneOf({"while"}, &keyword))
+    if (!oneOf({ "while" }, &keyword))
         return std::nullopt;
 
     space();
@@ -209,7 +209,7 @@ std::optional<Node> Parser::import_()
     // (import a:*)
 
     std::string keyword;
-    if (!oneOf({"import"}, &keyword))
+    if (!oneOf({ "import" }, &keyword))
         return std::nullopt;
 
     space();
@@ -221,9 +221,7 @@ std::optional<Node> Parser::import_()
     if (accept(IsChar('(')))
     {
         space();
-
-
-
+        // TODO argument list of import?
         expect(IsChar(')'));
         space();
     }
@@ -243,7 +241,7 @@ std::optional<Node> Parser::block()
 std::optional<Node> Parser::function()
 {
     std::string keyword;
-    if (!oneOf({"fun"}, &keyword))
+    if (!oneOf({ "fun" }, &keyword))
         return std::nullopt;
 
     space();
@@ -283,7 +281,7 @@ std::optional<Node> Parser::function()
 std::optional<Node> Parser::macro()
 {
     std::string keyword;
-    if (!oneOf({"macro"}, &keyword))
+    if (!oneOf({ "macro" }, &keyword))
         return std::nullopt;
 
     space();
@@ -303,13 +301,13 @@ std::optional<Node> Parser::macro()
 
         while (true)
         {
-            std::string symbol;
-            if (!name(&symbol))
+            std::string arg_name;
+            if (!name(&arg_name))
                 break;
             else
             {
                 space();
-                args->push_back(Node(NodeType::Symbol, symbol));
+                args->push_back(Node(NodeType::Symbol, arg_name));
             }
         }
 

@@ -22,7 +22,7 @@ void ParserCombinators::next()
     m_sym = m_in[m_count];
     ++m_count;
 
-    int previous_sym = m_count > 0 ? m_in[m_count - 1] : 0;
+    char previous_sym = m_count > 0 ? m_in[m_count - 1] : 0;
     if (previous_sym == '\n')
     {
         ++m_row;
@@ -68,7 +68,7 @@ bool ParserCombinators::expect(const CharPred& t, std::string* s)
 {
     // throw an error if the predicate couldn't consume the symbol
     if (!t(m_sym))
-        error("Expected " + t.name, std::string(1, static_cast<char>(m_sym)));  // FIXME downcasting
+        error("Expected " + t.name, std::string(1, m_sym));
     // otherwise, add it to the string and go to the next symbol
     if (s != nullptr)
         s->push_back(m_sym);

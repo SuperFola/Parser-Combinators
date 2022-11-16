@@ -78,9 +78,9 @@ int main(int argc, char* argv[])
         {
             std::cout << "ERROR\n"
                       << e.what() << "\n";
-            std::cout << "At " << static_cast<char>(e.sym) << " @ " << e.row << ":" << e.col << std::endl;
+            std::cout << "At " << static_cast<char>(e.symbol) << " @ " << e.line << ":" << e.col << std::endl;
 
-            makeContext(std::cout, code, e.row, e.col, e.exp);
+            makeContext(std::cout, code, e.line, e.col, e.expr);
         }
     }
 
