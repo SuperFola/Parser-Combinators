@@ -29,6 +29,7 @@ private:
     std::optional<Node> macro();
 
     std::optional<Node> atom();
+    std::optional<Node> wrapped(std::optional<Node> (Parser::*parser)(), char prefix, char suffix);
 
     void errorWithNextToken(const std::string& message);
 };

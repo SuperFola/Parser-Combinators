@@ -15,7 +15,10 @@ void Parser::parse()
         // parsing single line comments as instructions
         space();
         if (!isEOF())
-            comment();
+        {
+            while (comment())
+                space();
+        }
         else
             break;
         space();
@@ -45,33 +48,28 @@ std::optional<Node> Parser::node()
 {
     std::vector<std::function<std::optional<Node>()>> methods = {
         [this]() -> std::optional<Node> {
-            return letMutSet();
+            return wrapped(&Parser::letMutSet, '(', ')');
         },
         [this]() -> std::optional<Node> {
-            return del();
+            return wrapped(&Parser::del, '(', ')');
         },
         [this]() -> std::optional<Node> {
-            return condition();
+            return wrapped(&Parser::condition, '(', ')');
         },
         [this]() -> std::optional<Node> {
-            return loop();
+            return wrapped(&Parser::loop, '(', ')');
         },
         [this]() -> std::optional<Node> {
             return import_();
         },
         //[this]() -> std::optional<Node> { return block(); },
         [this]() -> std::optional<Node> {
-            return function();
+            return wrapped(&Parser::function, '(', ')');
         },
         [this]() -> std::optional<Node> {
-            return macro();
+            return wrapped(&Parser::macro, '(', ')');
         },
     };
-
-    if (!accept(IsChar('(')))  // FIXME can not implement import nor begin if this stays here
-                               // TODO make a node parser wrapper, taking charge of the surrounding ()
-        return std::nullopt;
-    space();
 
     // save current position in buffer to be able to go back if needed
     auto position = getCount();
@@ -81,13 +79,7 @@ std::optional<Node> Parser::node()
         auto result = methods[i]();
 
         if (result.has_value())
-        {
-            space();
-            if (accept(IsChar(')')))
-                return result;
-            else
-                errorWithNextToken("Missing closing paren after node");
-        }
+            return result;
         else
             backtrack(position);
     }
@@ -373,6 +365,26 @@ std::optional<Node> Parser::atom()
             return result;
         else
             backtrack(pos);
+    }
+
+    return std::nullopt;
+}
+
+std::optional<Node> Parser::wrapped(std::optional<Node> (Parser::*parser)(), char prefix, char suffix)
+{
+    if (!accept(IsChar(prefix)))
+        return std::nullopt;
+    space();
+
+    std::optional<Node> node = (this->*parser)();
+
+    if (node)
+    {
+        space();
+        if (accept(IsChar(suffix)))
+            return node;
+        else
+            errorWithNextToken("Missing '" + std::string(1, suffix) + "' after node");
     }
 
     return std::nullopt;

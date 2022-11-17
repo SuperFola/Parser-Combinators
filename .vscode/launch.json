@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Debug",
             "program": "${workspaceFolder}/build/parser",
-            "args": ["tests/if.ark"],
+            "args": ["tests/let_atom.ark"],
             "cwd": "${workspaceFolder}"
         }
     ]
