@@ -2,3 +2,4 @@
 ( Keyword:fun ( ) String:12 )
 ( Keyword:fun ( Symbol:a Symbol:b ) Number:2 )
 ( Keyword:fun ( Symbol:cc Symbol:dddd ) Number:1 )
+( Keyword:fun ( Symbol:a Symbol:b ) ( Keyword:if Number:1 Number:2 Number:3 ) )

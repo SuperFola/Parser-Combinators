@@ -23,7 +23,7 @@ build/parser <filename>
 
 Subparsers:
 - [x] let, mut, set
-  - [ ] handle nodes as values
+  - [x] handle nodes as values
 - [x] del
 - [x] condition
   - [ ] handle nodes as condition
@@ -34,10 +34,15 @@ Subparsers:
 - [ ] import
 - [ ] begin block
 - [x] function
-  - [ ] handle nodes as body
+  - [x] handle nodes as body
 - [x] macro
   - [ ] handle nodes as body
-- [x] atom (number, string, boolean, nil)
+- [x] atom
+  - [x] number
+  - [x] string
+  - [x] boolean
+  - [x] nil
+  - [ ] symbol
 - [x] comment
 
 Error context generation:

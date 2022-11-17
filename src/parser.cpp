@@ -93,23 +93,23 @@ std::optional<Node> Parser::letMutSet()
     std::string keyword;
     if (!oneOf({ "let", "mut", "set" }, &keyword))
         return std::nullopt;
-
     space();
 
     std::string symbol;
     if (!name(&symbol))
         errorWithNextToken(keyword + " needs a symbol");
-
     space();
-
-    auto value = atom();
-    if (!value)
-        errorWithNextToken("Expected a value");
 
     Node leaf(NodeType::List);
     leaf.push_back(Node(NodeType::Keyword, keyword));
     leaf.push_back(Node(NodeType::Symbol, symbol));
-    leaf.push_back(value.value());
+
+    if (auto value = atom(); value.has_value())
+        leaf.push_back(value.value());
+    else if (auto sub_node = node(); sub_node.has_value())
+        leaf.push_back(sub_node.value());
+    else
+        errorWithNextToken("Expected a value");
 
     return leaf;
 }
@@ -235,7 +235,6 @@ std::optional<Node> Parser::function()
     std::string keyword;
     if (!oneOf({ "fun" }, &keyword))
         return std::nullopt;
-
     space();
 
     expect(IsChar('('));
@@ -258,14 +257,16 @@ std::optional<Node> Parser::function()
     expect(IsChar(')'));
     space();
 
-    auto value = atom();
-    if (!value)  // TODO handle nodes
-        errorWithNextToken("Expected a value");
-
     Node leaf(NodeType::List);
     leaf.push_back(Node(NodeType::Keyword, keyword));
     leaf.push_back(args);
-    leaf.push_back(value.value());
+
+    if (auto value = atom(); value.has_value())
+        leaf.push_back(value.value());
+    else if (auto sub_node = node(); sub_node.has_value())
+        leaf.push_back(sub_node.value());
+    else
+        errorWithNextToken("Expected a value");
 
     return leaf;
 }
@@ -275,13 +276,11 @@ std::optional<Node> Parser::macro()
     std::string keyword;
     if (!oneOf({ "macro" }, &keyword))
         return std::nullopt;
-
     space();
 
     std::string symbol;
     if (!name(&symbol))
         errorWithNextToken(keyword + " needs a symbol");
-
     space();
 
     std::optional<Node> args;
@@ -307,17 +306,18 @@ std::optional<Node> Parser::macro()
         space();
     }
 
-
-    auto value = atom();
-    if (!value)  // TODO handle nodes
-        errorWithNextToken("Expected a value");
-
     Node leaf(NodeType::List);
     leaf.push_back(Node(NodeType::Keyword, keyword));
     leaf.push_back(Node(NodeType::Symbol, symbol));
     if (args.has_value())
         leaf.push_back(args.value());
-    leaf.push_back(value.value());
+
+    if (auto value = atom(); value.has_value())
+        leaf.push_back(value.value());
+    else if (auto sub_node = node(); sub_node.has_value())
+        leaf.push_back(sub_node.value());
+    else
+        errorWithNextToken("Expected a value");
 
     return leaf;
 }

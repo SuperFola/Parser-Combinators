@@ -2,3 +2,5 @@
 ( Keyword:mut Symbol:b Number:13 )
 ( Keyword:set Symbol:c String: )
 ( Keyword:let Symbol:b String:12 )
+( Keyword:let Symbol:d ( Keyword:if Number:1 Number:2 Number:3 ) )
+( Keyword:let Symbol:e ( Keyword:while Number:4 Number:5 ) )
