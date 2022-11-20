@@ -86,6 +86,7 @@ int main(int argc, char* argv[])
                 case '\r': escaped_symbol = "'\\r'"; break;
                 case '\t': escaped_symbol = "'\\t'"; break;
                 case '\v': escaped_symbol = "'\\v'"; break;
+                case '\0': escaped_symbol = "EOF"; break;
                 case ' ': escaped_symbol = "' '"; break;
                 default:
                     escaped_symbol = std::string(1, e.symbol);
