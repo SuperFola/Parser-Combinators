@@ -46,17 +46,15 @@ Subparsers:
 - [x] comment
 - [x] function calls
 - [ ] identifiers
-  - [ ] symbol
+  - [x] symbol
   - [ ] capture
   - [ ] dot notation
 
 Error context generation:
 ```
 ERROR
-Missing closing paren after node
-At l @ 0:2
-    1 | (let aaaaaaa 1)
-      |   ^
-    2 | 
-    3 | # test comment
+Package name expected after '.'
+At ' ' @ 1:12
+    1 | (import a. )
+      |           ^
 ```
