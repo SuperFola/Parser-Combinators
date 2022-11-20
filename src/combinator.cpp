@@ -54,12 +54,16 @@ void ParserCombinators::backtrack(std::size_t n)
 
 bool ParserCombinators::accept(const CharPred& t, std::string* s)
 {
+    if (isEOF())
+        return false;
+
     // return false if the predicate couldn't consume the symbol
     if (!t(m_sym))
         return false;
     // otherwise, add it to the string and go to the next symbol
     if (s != nullptr)
         s->push_back(m_sym);
+
     next();
     return true;
 }

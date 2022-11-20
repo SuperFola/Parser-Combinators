@@ -1,0 +1,6 @@
+ERROR
+Missing ')' after node
+At EOF @ 2:0
+    1 | (if 1 2 3
+    2 | 
+      | ^

@@ -196,7 +196,7 @@ protected:
     inline std::size_t getRow() { return m_row; }
     inline std::size_t getCount() { return m_count; }
     inline std::size_t getSize() { return m_in.size(); }
-    inline bool isEOF() { return m_count >= m_in.size() || m_sym == '\0'; }
+    inline bool isEOF() { return m_count > m_in.size() || m_sym == '\0'; }
 
     void backtrack(std::size_t n);
 
