@@ -280,16 +280,38 @@ std::optional<Node> Parser::function()
     space();
 
     Node args(NodeType::List);
+    bool has_captures = false;
 
     while (true)
     {
-        std::string symbol;
-        if (!name(&symbol))
-            break;
+        if (accept(IsChar('&')))  // captures
+        {
+            has_captures = true;
+            std::string capture;
+            if (!name(&capture))
+                break;
+            else
+            {
+                space();
+                args.push_back(Node(NodeType::Capture, capture));
+            }
+        }
         else
         {
-            space();
-            args.push_back(Node(NodeType::Symbol, symbol));
+            std::string symbol;
+            if (!name(&symbol))
+                break;
+            else
+            {
+                if (has_captures)
+                {
+                    backtrack(getCount() - symbol.size());
+                    error("Captured variables should be at the end of the argument list", symbol);
+                }
+
+                space();
+                args.push_back(Node(NodeType::Symbol, symbol));
+            }
         }
     }
 

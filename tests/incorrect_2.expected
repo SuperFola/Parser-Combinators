@@ -1,0 +1,5 @@
+ERROR
+Captured variables should be at the end of the argument list
+At c @ 1:13
+    1 | (fun (a &b c) 1)
+      |            ^^
