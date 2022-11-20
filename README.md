@@ -32,7 +32,7 @@ Subparsers:
   - [x] handle nodes as conditions
   - [x] handle nodes as body
 - [x] import
-- [ ] begin block
+- [x] begin block
 - [x] function
   - [x] handle nodes as body
 - [x] macro
@@ -47,7 +47,7 @@ Subparsers:
 - [x] function calls
 - [ ] identifiers
   - [x] symbol
-  - [ ] capture
+  - [x] capture
   - [ ] dot notation
 
 Error context generation:

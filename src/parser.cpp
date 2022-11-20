@@ -57,7 +57,9 @@ std::optional<Node> Parser::node()
         [this]() -> std::optional<Node> {
             return import_();
         },
-        //[this]() -> std::optional<Node> { return block(); },
+        [this]() -> std::optional<Node> {
+            return block();
+        },
         [this]() -> std::optional<Node> {
             return wrapped(&Parser::function, '(', ')');
         },
@@ -266,7 +268,36 @@ std::optional<Node> Parser::import_()
 
 std::optional<Node> Parser::block()
 {
-    return std::nullopt;
+    bool alt_syntax = false;
+    if (accept(IsChar('(')))
+    {
+        space();
+        if (!oneOf({ "begin" }))
+            return std::nullopt;
+    }
+    else if (accept(IsChar('{')))
+        alt_syntax = true;
+    else
+        return std::nullopt;
+    space();
+
+    Node leaf(NodeType::List);
+    leaf.push_back(Node(NodeType::Keyword, "begin"));
+
+    while (true)
+    {
+        if (auto value = nodeOrValue(); value.has_value())
+        {
+            leaf.push_back(value.value());
+            space();
+        }
+        else
+            break;
+    }
+
+    space();
+    expect(IsChar(!alt_syntax ? ')' : '}'));
+    return leaf;
 }
 
 std::optional<Node> Parser::function()
