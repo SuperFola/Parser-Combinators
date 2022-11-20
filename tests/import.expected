@@ -1,0 +1,8 @@
+( Keyword:import ( String:a ) ( ) )
+( Keyword:import ( String:a String:b ) ( ) )
+( Keyword:import ( String:foo String:bar String:egg ) ( ) )
+( Keyword:import ( String:foo ) Symbol:* )
+( Keyword:import ( String:foo String:bar ) Symbol:* )
+( Keyword:import ( String:foo String:bar String:egg ) Symbol:* )
+( Keyword:import ( String:foo ) ( Symbol:a ) )
+( Keyword:import ( String:foo String:bar ) ( Symbol:a Symbol:b ) )

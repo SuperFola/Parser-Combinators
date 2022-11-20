@@ -1,0 +1,14 @@
+(import a)
+(import a.b)
+(
+import
+foo.bar.egg
+)
+(import foo:*)
+(import foo.bar:*)
+(import foo.bar.egg:*)
+(import foo :a)
+(import foo.bar
+:a
+:b
+)

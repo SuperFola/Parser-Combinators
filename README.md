@@ -31,7 +31,7 @@ Subparsers:
 - [x] loop
   - [x] handle nodes as conditions
   - [x] handle nodes as body
-- [ ] import
+- [x] import
 - [ ] begin block
 - [x] function
   - [x] handle nodes as body
@@ -45,6 +45,10 @@ Subparsers:
   - [x] symbol
 - [x] comment
 - [x] function calls
+- [ ] identifiers
+  - [ ] symbol
+  - [ ] capture
+  - [ ] dot notation
 
 Error context generation:
 ```

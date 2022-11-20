@@ -190,33 +190,74 @@ std::optional<Node> Parser::loop()
 
 std::optional<Node> Parser::import_()
 {
-    // TODO import parser
-    // (import folder.bidule.machin :a :b :c)
+    // (import foo.bar.egg :a :b :c)
     // (import a)
     // (import a:*)
+
+    if (!accept(IsChar('(')))
+        return std::nullopt;
+    space();
 
     std::string keyword;
     if (!oneOf({ "import" }, &keyword))
         return std::nullopt;
-
     space();
-
-    std::string symbol;
-    if (!name(&symbol))
-        errorWithNextToken(keyword + " needs a symbol");
-
-    if (accept(IsChar('(')))
-    {
-        space();
-        // TODO argument list of import?
-        expect(IsChar(')'));
-        space();
-    }
 
     Node leaf(NodeType::List);
     leaf.push_back(Node(NodeType::Keyword, keyword));
-    leaf.push_back(Node(NodeType::Symbol, symbol));
 
+    std::string package;
+    if (!name(&package))
+        errorWithNextToken("Import expected a package name");
+
+    Node packageNode(NodeType::List);
+    packageNode.push_back(Node(NodeType::String, package));
+    Node symbols(NodeType::List);
+
+    while (true)
+    {
+        // parsing package folder.foo.bar.yes
+        if (accept(IsChar('.')))
+        {
+            std::string path;
+            if (!name(&path))
+                errorWithNextToken("Package name expected after '.'");
+            else
+                packageNode.push_back(Node(NodeType::String, path));
+        }
+        else if (accept(IsChar(':')) && accept(IsChar('*')))  // parsing :*
+        {
+            if (symbols.list().size() != 0)
+                errorWithNextToken("Star pattern can not follow a symbol to import");
+
+            space();
+            expect(IsChar(')'));
+
+            leaf.push_back(packageNode);
+            leaf.push_back(Node(NodeType::Symbol, "*"));
+
+            return leaf;
+        }
+        else if (space())  // parsing potential :a :b :c
+        {
+            if (accept(IsChar(':')))
+            {
+                std::string symbol;
+                if (!name(&symbol))
+                    errorWithNextToken("Expected a valid symbol to import");
+
+                symbols.push_back(Node(NodeType::Symbol, symbol));
+            }
+        }
+        else
+            break;
+    }
+
+    leaf.push_back(packageNode);
+    leaf.push_back(symbols);
+
+    space();
+    expect(IsChar(')'));
     return leaf;
 }
 
