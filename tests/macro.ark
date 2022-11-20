@@ -10,4 +10,4 @@ e
 (macro f(g)4)
 (macro h(i j) (let a 1))
 
-(macro h(i j) (let a (if 1 2 3)))
+(macro h (i j) (let a (if i 2 3)))

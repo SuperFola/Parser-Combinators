@@ -345,14 +345,12 @@ std::optional<Node> Parser::atom()
             }
             return std::nullopt;
         },
-        // true/false/nil
+        // true/false/nil/...
         [this]() -> std::optional<Node> {
             std::string res;
             if (!name(&res))
                 return std::nullopt;
-            if (res == "false" || res == "true" || res == "nil")
-                return Node(NodeType::Symbol, res);
-            return std::nullopt;
+            return Node(NodeType::Symbol, res);
         }
     };
 
