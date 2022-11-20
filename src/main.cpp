@@ -45,7 +45,7 @@ void makeContext(std::ostream& os, const std::string& code, std::size_t line, st
                 os << " ";
 
             // underline the error
-            for (std::size_t i = col_start; i < col_end; ++i)
+            for (std::size_t i = col_start; i <= col_end; ++i)
                 os << "^";
 
             os << "\n";
@@ -78,7 +78,20 @@ int main(int argc, char* argv[])
         {
             std::cout << "ERROR\n"
                       << e.what() << "\n";
-            std::cout << "At " << static_cast<char>(e.symbol) << " @ " << e.line << ":" << e.col << std::endl;
+
+            std::string escaped_symbol;
+            switch (e.symbol)
+            {
+                case '\n': escaped_symbol = "'\\n'"; break;
+                case '\r': escaped_symbol = "'\\r'"; break;
+                case '\t': escaped_symbol = "'\\t'"; break;
+                case '\v': escaped_symbol = "'\\v'"; break;
+                case ' ': escaped_symbol = "' '"; break;
+                default:
+                    escaped_symbol = std::string(1, e.symbol);
+            }
+            // e.line + 1 because we start counting at 0 and every code editor line counts starts at 1
+            std::cout << "At " << escaped_symbol << " @ " << (e.line + 1) << ":" << e.col << std::endl;
 
             makeContext(std::cout, code, e.line, e.col, e.expr);
         }
