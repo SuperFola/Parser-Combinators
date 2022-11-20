@@ -1,0 +1,5 @@
+ERROR
+del needs a symbol
+At EOF @ 1:5
+    1 | (del)
+      |      ^

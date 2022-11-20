@@ -1,0 +1,6 @@
+ERROR
+let needs a symbol
+At EOF @ 2:3
+    1 | (
+    2 | let
+      |    ^
