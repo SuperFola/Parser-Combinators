@@ -12,16 +12,11 @@ void Parser::parse()
 {
     while (!isEOF())
     {
-        // parsing single line comments as instructions
         space();
-        if (!isEOF())
-        {
-            while (comment())
-                space();
-        }
-        else
+        while (!isEOF() && comment())
+            space();
+        if (isEOF())
             break;
-        space();
 
         auto n = node();
         if (n)
