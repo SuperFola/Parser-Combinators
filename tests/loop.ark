@@ -11,8 +11,4 @@ while
 (
     
       while  3  3  )
-
-
-
-
-#
+(while (isGood 1) (doStuff a (if b c d)))

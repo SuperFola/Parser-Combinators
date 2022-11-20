@@ -26,11 +26,11 @@ Subparsers:
   - [x] handle nodes as values
 - [x] del
 - [x] condition
-  - [ ] handle nodes as condition
-  - [ ] handle nodes as values
+  - [x] handle nodes as condition
+  - [x] handle nodes as values
 - [x] loop
-  - [ ] handle nodes as conditions
-  - [ ] handle nodes as body
+  - [x] handle nodes as conditions
+  - [x] handle nodes as body
 - [ ] import
 - [ ] begin block
 - [x] function
@@ -44,6 +44,7 @@ Subparsers:
   - [x] nil
   - [x] symbol
 - [x] comment
+- [x] function calls
 
 Error context generation:
 ```

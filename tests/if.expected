@@ -2,3 +2,5 @@
 ( Keyword:if Number:1 Number:2 Number:3 )
 ( Keyword:if String:a Number:1 Number:2 )
 ( Keyword:if Number:1 Number:2 )
+( Keyword:if ( Symbol:func Symbol:a Symbol:b ) Symbol:a Symbol:b )
+( Keyword:if ( Symbol:a Symbol:b Symbol:c ) ( Symbol:d Symbol:e ) ( Symbol:f ) )

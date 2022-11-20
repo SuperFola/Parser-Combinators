@@ -1,3 +1,4 @@
 ( Keyword:while Number:1 Number:1 )
 ( Keyword:while Number:2 Number:2 )
 ( Keyword:while Number:3 Number:3 )
+( Keyword:while ( Symbol:isGood Number:1 ) ( Symbol:doStuff Symbol:a ( Keyword:if Symbol:b Symbol:c Symbol:d ) ) )

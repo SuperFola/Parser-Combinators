@@ -1,0 +1,2 @@
+( Symbol:func Symbol:a Symbol:b )
+( Symbol:func ( Keyword:if Number:1 Number:2 Number:3 ) String:hello )

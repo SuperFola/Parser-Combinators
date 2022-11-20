@@ -1,5 +1,5 @@
 ERROR
 del needs a symbol
-At EOF @ 1:5
+At EOF @ 1:6
     1 | (del)
       |      ^

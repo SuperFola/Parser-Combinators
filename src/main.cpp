@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
                     escaped_symbol = std::string(1, e.symbol);
             }
             // e.line + 1 because we start counting at 0 and every code editor line counts starts at 1
-            std::cout << "At " << escaped_symbol << " @ " << (e.line + 1) << ":" << e.col << std::endl;
+            std::cout << "At " << escaped_symbol << " @ " << (e.line + 1) << ":" << (e.col + 1) << std::endl;
 
             makeContext(std::cout, code, e.line, e.col, e.expr);
         }

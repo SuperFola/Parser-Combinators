@@ -64,6 +64,9 @@ std::optional<Node> Parser::node()
         [this]() -> std::optional<Node> {
             return wrapped(&Parser::macro, '(', ')');
         },
+        [this]() -> std::optional<Node> {
+            return functionCall();
+        },
     };
 
     // save current position in buffer to be able to go back if needed
@@ -79,7 +82,6 @@ std::optional<Node> Parser::node()
             backtrack(position);
     }
 
-    errorWithNextToken("Couldn't parse node");
     return std::nullopt;  // will never reach
 }
 
@@ -134,28 +136,28 @@ std::optional<Node> Parser::condition()
 
     space();
 
-    auto condition = atom();
-    if (!condition)
-        errorWithNextToken("If need a valid condition");  // TODO handle nodes
+    Node leaf(NodeType::List);
+    leaf.push_back(Node(NodeType::Keyword, keyword));
+
+    if (auto condition = nodeOrValue(); condition.has_value())
+        leaf.push_back(condition.value());
+    else
+        errorWithNextToken("If need a valid condition");
 
     space();
 
-    auto value_if_true = atom();  // TODO handle nodes
-    if (!value_if_true)
+    if (auto value_if_true = nodeOrValue(); value_if_true.has_value())
+        leaf.push_back(value_if_true.value());
+    else
         errorWithNextToken("Expected a value");
 
     space();
 
-    auto value_if_false = atom();  // TODO handle nodes
-    if (value_if_false)
-        space();
-
-    Node leaf(NodeType::List);
-    leaf.push_back(Node(NodeType::Keyword, keyword));
-    leaf.push_back(condition.value());
-    leaf.push_back(value_if_true.value());
-    if (value_if_false)
+    if (auto value_if_false = nodeOrValue(); value_if_false.has_value())
+    {
         leaf.push_back(value_if_false.value());
+        space();
+    }
 
     return leaf;
 }
@@ -168,20 +170,20 @@ std::optional<Node> Parser::loop()
 
     space();
 
-    auto condition = atom();
-    if (!condition)
-        errorWithNextToken("While need a valid condition");  // TODO handle nodes
+    Node leaf(NodeType::List);
+    leaf.push_back(Node(NodeType::Keyword, keyword));
+
+    if (auto condition = nodeOrValue(); condition.has_value())
+        leaf.push_back(condition.value());
+    else
+        errorWithNextToken("While need a valid condition");
 
     space();
 
-    auto body = atom();  // TODO handle nodes
-    if (!body)
+    if (auto body = nodeOrValue(); body.has_value())
+        leaf.push_back(body.value());
+    else
         errorWithNextToken("Expected a value");
-
-    Node leaf(NodeType::List);
-    leaf.push_back(Node(NodeType::Keyword, keyword));
-    leaf.push_back(condition.value());
-    leaf.push_back(body.value());
 
     return leaf;
 }
@@ -274,12 +276,14 @@ std::optional<Node> Parser::macro()
         errorWithNextToken(keyword + " needs a symbol");
     space();
 
-    std::optional<Node> args;
+    Node leaf(NodeType::List);
+    leaf.push_back(Node(NodeType::Keyword, keyword));
+    leaf.push_back(Node(NodeType::Symbol, symbol));
 
     if (accept(IsChar('(')))
     {
         space();
-        args = Node(NodeType::List);
+        Node args = Node(NodeType::List);
 
         while (true)
         {
@@ -289,24 +293,51 @@ std::optional<Node> Parser::macro()
             else
             {
                 space();
-                args->push_back(Node(NodeType::Symbol, arg_name));
+                args.push_back(Node(NodeType::Symbol, arg_name));
             }
         }
 
         expect(IsChar(')'));
         space();
+
+        leaf.push_back(args);
     }
 
-    Node leaf(NodeType::List);
-    leaf.push_back(Node(NodeType::Keyword, keyword));
-    leaf.push_back(Node(NodeType::Symbol, symbol));
-    if (args.has_value())
-        leaf.push_back(args.value());
     if (auto value = nodeOrValue(); value.has_value())
         leaf.push_back(value.value());
     else
         errorWithNextToken("Expected a value");
 
+    return leaf;
+}
+
+std::optional<Node> Parser::functionCall()
+{
+    if (!accept(IsChar('(')))
+        return std::nullopt;
+    space();
+
+    std::string symbol;
+    if (!name(&symbol))
+        return std::nullopt;
+    space();
+
+    Node leaf(NodeType::List);
+    leaf.push_back(Node(NodeType::Symbol, symbol));
+
+    while (true)
+    {
+        if (auto arg = nodeOrValue(); arg.has_value())
+        {
+            space();
+            leaf.push_back(arg.value());
+        }
+        else
+            break;
+    }
+
+    space();
+    expect(IsChar(')'));
     return leaf;
 }
 

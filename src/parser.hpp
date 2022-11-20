@@ -27,6 +27,7 @@ private:
     std::optional<Node> block();
     std::optional<Node> function();
     std::optional<Node> macro();
+    std::optional<Node> functionCall();
 
     std::optional<Node> atom();
     std::optional<Node> nodeOrValue();

@@ -1,0 +1,5 @@
+ERROR
+Expected ')'
+At EOF @ 1:26
+    1 | (a b c (if (ok true) 1 2)
+      |                          ^
