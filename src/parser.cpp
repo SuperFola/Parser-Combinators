@@ -99,10 +99,8 @@ std::optional<Node> Parser::letMutSet()
     leaf.push_back(Node(NodeType::Keyword, keyword));
     leaf.push_back(Node(NodeType::Symbol, symbol));
 
-    if (auto value = atom(); value.has_value())
+    if (auto value = nodeOrValue(); value.has_value())
         leaf.push_back(value.value());
-    else if (auto sub_node = node(); sub_node.has_value())
-        leaf.push_back(sub_node.value());
     else
         errorWithNextToken("Expected a value");
 
@@ -256,10 +254,8 @@ std::optional<Node> Parser::function()
     leaf.push_back(Node(NodeType::Keyword, keyword));
     leaf.push_back(args);
 
-    if (auto value = atom(); value.has_value())
+    if (auto value = nodeOrValue(); value.has_value())
         leaf.push_back(value.value());
-    else if (auto sub_node = node(); sub_node.has_value())
-        leaf.push_back(sub_node.value());
     else
         errorWithNextToken("Expected a value");
 
@@ -306,11 +302,8 @@ std::optional<Node> Parser::macro()
     leaf.push_back(Node(NodeType::Symbol, symbol));
     if (args.has_value())
         leaf.push_back(args.value());
-
-    if (auto value = atom(); value.has_value())
+    if (auto value = nodeOrValue(); value.has_value())
         leaf.push_back(value.value());
-    else if (auto sub_node = node(); sub_node.has_value())
-        leaf.push_back(sub_node.value());
     else
         errorWithNextToken("Expected a value");
 
@@ -359,6 +352,16 @@ std::optional<Node> Parser::atom()
         else
             backtrack(pos);
     }
+
+    return std::nullopt;
+}
+
+std::optional<Node> Parser::nodeOrValue()
+{
+    if (auto value = atom(); value.has_value())
+        return value;
+    else if (auto sub_node = node(); sub_node.has_value())
+        return sub_node;
 
     return std::nullopt;
 }
