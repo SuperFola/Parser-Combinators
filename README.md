@@ -36,13 +36,13 @@ Subparsers:
 - [x] function
   - [x] handle nodes as body
 - [x] macro
-  - [ ] handle nodes as body
+  - [x] handle nodes as body
 - [x] atom
   - [x] number
   - [x] string
   - [x] boolean
   - [x] nil
-  - [ ] symbol
+  - [x] symbol
 - [x] comment
 
 Error context generation:
