@@ -2,4 +2,4 @@ ERROR
 del needs a symbol
 At EOF @ 1:6
     1 | (del)
-      |      ^
+      |     ^

@@ -1,0 +1,5 @@
+ERROR
+Star pattern can not follow a symbol to import
+At : @ 1:16
+    1 | (import a.b :c:*)
+      |               ^^^

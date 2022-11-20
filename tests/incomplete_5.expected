@@ -1,0 +1,5 @@
+ERROR
+Import expected a package name
+At EOF @ 1:9
+    1 | (import)
+      |        ^

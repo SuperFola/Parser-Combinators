@@ -1,0 +1,5 @@
+ERROR
+Package name expected after '.'
+At ' ' @ 1:12
+    1 | (import a. )
+      |           ^

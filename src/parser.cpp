@@ -228,7 +228,10 @@ std::optional<Node> Parser::import_()
         else if (accept(IsChar(':')) && accept(IsChar('*')))  // parsing :*
         {
             if (symbols.list().size() != 0)
-                errorWithNextToken("Star pattern can not follow a symbol to import");
+            {
+                backtrack(getCount() - 2);
+                error("Star pattern can not follow a symbol to import", ":*");
+            }
 
             space();
             expect(IsChar(')'));

@@ -41,7 +41,7 @@ void makeContext(std::ostream& os, const std::string& code, std::size_t line, st
             os << "      | ";
 
             // padding of spaces
-            for (std::size_t i = 0; i < col_start; ++i)
+            for (std::size_t i = 0; i < (col_start > 0 ? col_start - 1 : col_start); ++i)
                 os << " ";
 
             // underline the error
