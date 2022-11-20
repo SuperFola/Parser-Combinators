@@ -45,10 +45,11 @@ Subparsers:
   - [x] symbol
 - [x] comment
 - [x] function calls
-- [ ] identifiers
+- [x] identifiers
   - [x] symbol
   - [x] capture
-  - [ ] dot notation
+  - [x] dot notation
+- [ ] special syntax for (list ...): [...]
 
 Error context generation:
 ```
@@ -58,3 +59,18 @@ At ' ' @ 1:12
     1 | (import a. )
       |           ^
 ```
+
+## Breaking changes
+
+This is for ArkScript, but some things had to change for the next version of the language, implemented by this parser.
+
+- quote is no longer supported, use functions with no arguments instead
+- import do not work the same way as before: (import "path.ark") won't work, we are using a package like syntax now:
+```lisp
+(import a)
+(import a.b)  # everything is prefixed by b
+(import foo.bar.egg)
+(import foo:*)  # everything is imported in the current scope
+(import foo.bar :a :b)  # we import only a and b from foo.bar, in the current scope
+```
+- fields aren't chained in the AST: `(Symbol:a GetField:b GetField:c)` was the old way of having a `a.b.c` in the AST, now we have `Field(Symbol:a Symbol:b Symbol:c)`, the node holding the field being a list of symbols

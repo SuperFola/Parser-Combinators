@@ -6,12 +6,12 @@ Node::Node(NodeType type) :
     switch (m_type)
     {
         case NodeType::List:
+        case NodeType::Field:
             m_value = std::vector<Node>();
             break;
 
         case NodeType::Symbol:
         case NodeType::Capture:
-        case NodeType::GetField:
         case NodeType::Keyword:
         case NodeType::String:
         case NodeType::Spread:
@@ -64,10 +64,6 @@ std::ostream& operator<<(std::ostream& os, const Node& node)
             os << "Capture:" << node.string();
             break;
 
-        case NodeType::GetField:
-            os << "GetField:" << node.string();
-            break;
-
         case NodeType::Keyword:
             os << "Keyword:" << node.string();
             break;
@@ -82,6 +78,13 @@ std::ostream& operator<<(std::ostream& os, const Node& node)
 
         case NodeType::List:
             os << "( ";
+            for (std::size_t i = 0, end = node.list().size(); i < end; ++i)
+                os << node.list()[i] << " ";
+            os << ")";
+            break;
+
+        case NodeType::Field:
+            os << "( Field ";
             for (std::size_t i = 0, end = node.list().size(); i < end; ++i)
                 os << node.list()[i] << " ";
             os << ")";

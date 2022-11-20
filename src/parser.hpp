@@ -30,6 +30,7 @@ private:
     std::optional<Node> functionCall();
 
     std::optional<Node> atom();
+    std::optional<Node> anyAtomOf(std::initializer_list<NodeType> types);
     std::optional<Node> nodeOrValue();
     std::optional<Node> wrapped(std::optional<Node> (Parser::*parser)(), char prefix, char suffix);
 

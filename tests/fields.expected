@@ -1,0 +1,6 @@
+( Keyword:let Symbol:a ( Field Symbol:b Symbol:c ) )
+( Keyword:mut Symbol:d ( Field Symbol:e Symbol:f Symbol:g ) )
+( Keyword:if ( ( Field Symbol:hi Symbol:jk ) ) ( Field Symbol:l Symbol:m ) ( Field Symbol:n Symbol:o Symbol:p ) )
+( Keyword:while ( Field Symbol:q Symbol:r ) ( Field Symbol:s Symbol:t ) )
+( Keyword:fun ( ) ( Field Symbol:u Symbol:v ) )
+( Keyword:begin ( Field Symbol:x Symbol:y Symbol:z ) )

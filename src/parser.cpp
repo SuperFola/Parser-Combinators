@@ -414,13 +414,13 @@ std::optional<Node> Parser::functionCall()
         return std::nullopt;
     space();
 
-    std::string symbol;
-    if (!name(&symbol))
+    std::optional<Node> func = anyAtomOf({ NodeType::Symbol, NodeType::Field });
+    if (!func.has_value())
         return std::nullopt;
     space();
 
     Node leaf(NodeType::List);
-    leaf.push_back(Node(NodeType::Symbol, symbol));
+    leaf.push_back(func.value());
 
     while (true)
     {
@@ -461,6 +461,31 @@ std::optional<Node> Parser::atom()
             }
             return std::nullopt;
         },
+        // field
+        [this]() -> std::optional<Node> {
+            std::string symbol;
+            if (!name(&symbol))
+                return std::nullopt;
+
+            Node leaf = Node(NodeType::Field);
+            leaf.push_back(Node(NodeType::Symbol, symbol));
+
+            while (true)
+            {
+                space();
+                if (leaf.list().size() == 1 && !accept(IsChar('.')))  // Symbol:abc
+                    return std::nullopt;
+
+                if (leaf.list().size() > 1 && !accept(IsChar('.')))
+                    break;
+                std::string res;
+                if (!name(&res))
+                    errorWithNextToken("Expected a field name: <symbol>.<field>");
+                leaf.push_back(Node(NodeType::Symbol, res));
+            }
+
+            return leaf;
+        },
         // true/false/nil/...
         [this]() -> std::optional<Node> {
             std::string res;
@@ -481,6 +506,20 @@ std::optional<Node> Parser::atom()
             backtrack(pos);
     }
 
+    return std::nullopt;
+}
+
+std::optional<Node> Parser::anyAtomOf(std::initializer_list<NodeType> types)
+{
+    auto value = atom();
+    if (value.has_value())
+    {
+        for (auto type : types)
+        {
+            if (value->nodeType() == type)
+                return value;
+        }
+    }
     return std::nullopt;
 }
 

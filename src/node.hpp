@@ -10,12 +10,12 @@ enum class NodeType
 {
     Symbol,
     Capture,
-    GetField,
     Keyword,
     String,
     Number,
     List,
     Spread,
+    Field,
     Unused
 };
 
