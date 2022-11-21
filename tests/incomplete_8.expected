@@ -1,0 +1,7 @@
+ERROR
+Expected ']'
+At EOF @ 3:8
+    1 | [
+    2 |     1
+    3 |     2 3
+      |       ^
