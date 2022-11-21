@@ -10,12 +10,13 @@
 class Parser : public BaseParser
 {
 public:
-    Parser(const std::string& code);
+    Parser(const std::string& code, bool debug);
 
     void parse();
 
 private:
     Node m_ast;
+    bool m_debug;
 
     bool comment();
     std::optional<Node> node();

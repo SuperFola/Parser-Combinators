@@ -24,7 +24,7 @@ passed=0
 failed=0
 
 for f in ./*.ark; do
-    output=$($cmd $f --lib ../../lib 2>&1)
+    output=$($cmd $f -debug 2>&1)
     expected=$(cat ${f%.*}.expected)
     diff=$(diff <(echo "$output") <(echo "$expected"))
 

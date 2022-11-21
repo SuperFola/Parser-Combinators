@@ -57,11 +57,12 @@ int main(int argc, char* argv[])
 {
     if (argc < 2)
     {
-        std::cout << "Expected one argument: filename" << std::endl;
+        std::cout << "Expected at least one argument: filename [-debug]" << std::endl;
         return 1;
     }
 
     std::string filename(argv[1]);
+    bool debug = argc >= 3 && std::string(argv[2]) == "-debug";
 
     std::ifstream stream(filename);
     if (!stream.is_open())
@@ -69,7 +70,7 @@ int main(int argc, char* argv[])
     else
     {
         std::string code((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
-        Parser parser(code);
+        Parser parser(code, debug);
         try
         {
             parser.parse();

@@ -3,8 +3,8 @@
 #include <iostream>
 #include <functional>
 
-Parser::Parser(const std::string& code) :
-    BaseParser(code), m_ast(NodeType::List)
+Parser::Parser(const std::string& code, bool debug) :
+    BaseParser(code), m_ast(NodeType::List), m_debug(debug)
 {}
 
 void Parser::parse()
@@ -22,8 +22,11 @@ void Parser::parse()
             m_ast.push_back(n.value());
     }
 
-    for (auto block : m_ast.list())
-        std::cout << block << "\n";
+    if (m_debug)
+    {
+        for (auto block : m_ast.list())
+            std::cout << block << "\n";
+    }
 }
 
 bool Parser::comment()
