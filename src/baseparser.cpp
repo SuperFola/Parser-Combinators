@@ -141,11 +141,11 @@ bool BaseParser::signedNumber(std::string* s)
 
 bool BaseParser::name(std::string* s)
 {
-    // first character of a name must be alphabetic
-    if (accept(IsAlpha, s))
+    auto alnum_symbols = IsEither(IsAlnum, IsSymbol);
+
+    if (accept(alnum_symbols, s))
     {
-        // the next ones can be alphanumeric, or '_'
-        while (accept(IsAlnum, s) || accept(IsChar('_'), s))
+        while (accept(alnum_symbols, s))
             ;
         return true;
     }

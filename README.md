@@ -44,12 +44,16 @@ Subparsers:
   - [x] nil
   - [x] symbol
 - [x] comment
+  - [ ] comments in blocks and not only top level ones
 - [x] function calls
+  - [ ] anonymous calls: ((fun () (print 1)))
 - [x] identifiers
   - [x] symbol
   - [x] capture
   - [x] dot notation
-- [ ] special syntax for (list ...): [...]
+    - [ ] dot notation after call: (@ list 14).field
+  - [x] non alnum identifiers (`+`, `!=`, `>=`...)
+- [x] special syntax for (list ...): [...]
 
 Error context generation:
 ```

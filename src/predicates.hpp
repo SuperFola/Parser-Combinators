@@ -137,6 +137,37 @@ private:
     const CharPred& m_a;
 };
 
+inline struct IsSymbol : public CharPred
+{
+    IsSymbol() :
+        CharPred("sym") {}
+    virtual bool operator()(const char c) const override
+    {
+        switch (c)
+        {
+            case ':':
+            case '!':
+            case '?':
+            case '@':
+            case '_':
+            case '-':
+            case '+':
+            case '*':
+            case '/':
+            case '|':
+            case '=':
+            case '<':
+            case '>':
+            case '%':
+            case '$':
+                return true;
+
+            default:
+                return false;
+        }
+    }
+} IsSymbol;
+
 inline struct IsAny : public CharPred
 {
     IsAny() :
