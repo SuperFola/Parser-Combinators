@@ -1,11 +1,10 @@
 #include "parser.hpp"
-#include "combinator.hpp"
 
 #include <iostream>
 #include <functional>
 
 Parser::Parser(const std::string& code) :
-    ParserCombinators(code), m_ast(NodeType::List)
+    BaseParser(code), m_ast(NodeType::List)
 {}
 
 void Parser::parse()
@@ -68,6 +67,9 @@ std::optional<Node> Parser::node()
         },
         [this]() -> std::optional<Node> {
             return functionCall();
+        },
+        [this]() -> std::optional<Node> {
+            return list();
         },
     };
 
@@ -435,6 +437,31 @@ std::optional<Node> Parser::functionCall()
 
     space();
     expect(IsChar(')'));
+    return leaf;
+}
+
+std::optional<Node> Parser::list()
+{
+    if (!accept(IsChar('[')))
+        return std::nullopt;
+    space();
+
+    Node leaf(NodeType::List);
+    leaf.push_back(Node(NodeType::Symbol, "list"));
+
+    while (true)
+    {
+        if (auto value = nodeOrValue(); value.has_value())
+        {
+            leaf.push_back(value.value());
+            space();
+        }
+        else
+            break;
+    }
+
+    space();
+    expect(IsChar(']'));
     return leaf;
 }
 

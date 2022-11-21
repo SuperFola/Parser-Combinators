@@ -7,7 +7,7 @@ option(ENABLE_SANITIZERS "Enable ASAN and UBSAN" Off)
 
 add_executable(parser
     src/main.cpp
-    src/combinator.cpp
+    src/baseparser.cpp
     src/node.cpp
     src/parser.cpp
 )

@@ -1,13 +1,13 @@
 #ifndef PARSER_HPP
 #define PARSER_HPP
 
-#include "combinator.hpp"
+#include "baseparser.hpp"
 #include "node.hpp"
 
 #include <string>
 #include <optional>
 
-class Parser : public ParserCombinators
+class Parser : public BaseParser
 {
 public:
     Parser(const std::string& code);
@@ -28,6 +28,7 @@ private:
     std::optional<Node> function();
     std::optional<Node> macro();
     std::optional<Node> functionCall();
+    std::optional<Node> list();
 
     std::optional<Node> atom();
     std::optional<Node> anyAtomOf(std::initializer_list<NodeType> types);

@@ -1,8 +1,8 @@
-#include "combinator.hpp"
+#include "baseparser.hpp"
 
 #include <iostream>
 
-ParserCombinators::ParserCombinators(const std::string& s) :
+BaseParser::BaseParser(const std::string& s) :
     m_in(s), m_count(0), m_row(0), m_col(0)
 {
     // if the input string is empty, raise an error
@@ -16,7 +16,7 @@ ParserCombinators::ParserCombinators(const std::string& s) :
     next();
 }
 
-void ParserCombinators::next()
+void BaseParser::next()
 {
     // getting a character from the stream
     m_sym = m_in[m_count];
@@ -32,7 +32,7 @@ void ParserCombinators::next()
         ++m_col;
 }
 
-void ParserCombinators::backtrack(std::size_t n)
+void BaseParser::backtrack(std::size_t n)
 {
     m_count = n;
     m_sym = m_in[m_count - 1];
@@ -52,7 +52,7 @@ void ParserCombinators::backtrack(std::size_t n)
     }
 }
 
-bool ParserCombinators::accept(const CharPred& t, std::string* s)
+bool BaseParser::accept(const CharPred& t, std::string* s)
 {
     if (isEOF())
         return false;
@@ -68,7 +68,7 @@ bool ParserCombinators::accept(const CharPred& t, std::string* s)
     return true;
 }
 
-bool ParserCombinators::expect(const CharPred& t, std::string* s)
+bool BaseParser::expect(const CharPred& t, std::string* s)
 {
     // throw an error if the predicate couldn't consume the symbol
     if (!t(m_sym))
@@ -80,7 +80,7 @@ bool ParserCombinators::expect(const CharPred& t, std::string* s)
     return true;
 }
 
-bool ParserCombinators::space(std::string* s)
+bool BaseParser::space(std::string* s)
 {
     if (accept(IsSpace))
     {
@@ -94,7 +94,7 @@ bool ParserCombinators::space(std::string* s)
     return false;
 }
 
-bool ParserCombinators::inlineSpace(std::string* s)
+bool BaseParser::inlineSpace(std::string* s)
 {
     if (accept(IsInlineSpace))
     {
@@ -108,7 +108,7 @@ bool ParserCombinators::inlineSpace(std::string* s)
     return false;
 }
 
-bool ParserCombinators::endOfLine(std::string* s)
+bool BaseParser::endOfLine(std::string* s)
 {
     if ((accept(IsChar('\r')) || true) && accept(IsChar('\n')))
     {
@@ -121,7 +121,7 @@ bool ParserCombinators::endOfLine(std::string* s)
     return false;
 }
 
-bool ParserCombinators::number(std::string* s)
+bool BaseParser::number(std::string* s)
 {
     if (accept(IsDigit, s))
     {
@@ -134,12 +134,12 @@ bool ParserCombinators::number(std::string* s)
     return false;
 }
 
-bool ParserCombinators::signedNumber(std::string* s)
+bool BaseParser::signedNumber(std::string* s)
 {
     return accept(IsMinus, s), number(s);
 }
 
-bool ParserCombinators::name(std::string* s)
+bool BaseParser::name(std::string* s)
 {
     // first character of a name must be alphabetic
     if (accept(IsAlpha, s))
@@ -152,7 +152,7 @@ bool ParserCombinators::name(std::string* s)
     return false;
 }
 
-bool ParserCombinators::anyUntil(const CharPred& delim, std::string* s)
+bool BaseParser::anyUntil(const CharPred& delim, std::string* s)
 {
     if (accept(IsNot(delim), s))
     {
@@ -163,7 +163,7 @@ bool ParserCombinators::anyUntil(const CharPred& delim, std::string* s)
     return false;
 }
 
-bool ParserCombinators::oneOf(std::initializer_list<std::string> words, std::string* s)
+bool BaseParser::oneOf(std::initializer_list<std::string> words, std::string* s)
 {
     std::string buffer;
     if (!name(&buffer))
