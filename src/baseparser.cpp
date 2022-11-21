@@ -152,7 +152,7 @@ bool BaseParser::name(std::string* s)
     return false;
 }
 
-bool BaseParser::packageName(std::string*s)
+bool BaseParser::packageName(std::string* s)
 {
     if (accept(IsAlnum, s))
     {

@@ -75,7 +75,7 @@ protected:
     bool number(std::string* s = nullptr);
     bool signedNumber(std::string* s = nullptr);
     bool name(std::string* s = nullptr);
-    bool packageName(std::string*s = nullptr);
+    bool packageName(std::string* s = nullptr);
     bool anyUntil(const CharPred& delim, std::string* s = nullptr);
 
     bool oneOf(std::initializer_list<std::string> words, std::string* s = nullptr);
