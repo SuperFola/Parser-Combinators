@@ -152,6 +152,17 @@ bool BaseParser::name(std::string* s)
     return false;
 }
 
+bool BaseParser::packageName(std::string*s)
+{
+    if (accept(IsAlnum, s))
+    {
+        while (accept(IsEither(IsAlnum, IsChar('_')), s))
+            ;
+        return true;
+    }
+    return false;
+}
+
 bool BaseParser::anyUntil(const CharPred& delim, std::string* s)
 {
     if (accept(IsNot(delim), s))

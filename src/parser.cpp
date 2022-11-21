@@ -197,9 +197,9 @@ std::optional<Node> Parser::loop()
 
 std::optional<Node> Parser::import_()
 {
-    // (import foo.bar.egg :a :b :c)
     // (import a)
     // (import a:*)
+    // (import foo.bar.egg :a :b :c)
 
     if (!accept(IsChar('(')))
         return std::nullopt;
@@ -214,32 +214,27 @@ std::optional<Node> Parser::import_()
     leaf.push_back(Node(NodeType::Keyword, keyword));
 
     std::string package;
-    if (!name(&package))
+    if (!packageName(&package))
         errorWithNextToken("Import expected a package name");
 
     Node packageNode(NodeType::List);
     packageNode.push_back(Node(NodeType::String, package));
     Node symbols(NodeType::List);
 
+    // first, parse the package name
     while (true)
     {
         // parsing package folder.foo.bar.yes
         if (accept(IsChar('.')))
         {
             std::string path;
-            if (!name(&path))
+            if (!packageName(&path))
                 errorWithNextToken("Package name expected after '.'");
             else
                 packageNode.push_back(Node(NodeType::String, path));
         }
         else if (accept(IsChar(':')) && accept(IsChar('*')))  // parsing :*
         {
-            if (symbols.list().size() != 0)
-            {
-                backtrack(getCount() - 2);
-                error("Star pattern can not follow a symbol to import", ":*");
-            }
-
             space();
             expect(IsChar(')'));
 
@@ -248,19 +243,33 @@ std::optional<Node> Parser::import_()
 
             return leaf;
         }
-        else if (space())  // parsing potential :a :b :c
+        else
+            break;
+    }
+
+    // then parse the symbols to import, it any
+    if (space())
+    {
+        while (true)
         {
-            if (accept(IsChar(':')))
+            if (accept(IsChar(':')))  // parsing potential :a :b :c
             {
                 std::string symbol;
                 if (!name(&symbol))
                     errorWithNextToken("Expected a valid symbol to import");
 
+                if (symbol[symbol.size() - 2] == ':' && symbol.back() == '*')
+                {
+                    backtrack(getCount() - 2);
+                    error("Star pattern can not follow a symbol to import", ":*");
+                }
+
                 symbols.push_back(Node(NodeType::Symbol, symbol));
             }
+
+            if (!space())
+                break;
         }
-        else
-            break;
     }
 
     leaf.push_back(packageNode);
