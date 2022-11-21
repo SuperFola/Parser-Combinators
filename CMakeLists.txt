@@ -13,9 +13,9 @@ add_executable(parser
 )
 
 if (MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE /W4)
+    target_compile_options(parser PRIVATE /W4)
 else()
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wshadow -Wconversion -Wpedantic -Werror)
+    target_compile_options(parser PRIVATE -Wall -Wextra -Wshadow -Wconversion -Wpedantic -Werror)
 endif()
 
 if (ENABLE_SANITIZERS)
@@ -25,7 +25,7 @@ if (ENABLE_SANITIZERS)
 endif()
 
 set_target_properties(
-    ${PROJECT_NAME}
+    parser
     PROPERTIES
         CXX_STANDARD 17
         CXX_STANDARD_REQUIRED ON

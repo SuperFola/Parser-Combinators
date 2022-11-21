@@ -1,0 +1,1 @@
+./build/bench --benchmark_min_time=5 --benchmark_min_warmup_time=1
