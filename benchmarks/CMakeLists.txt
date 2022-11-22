@@ -9,14 +9,13 @@ add_executable(bench
     ../src/baseparser.cpp
     ../src/node.cpp
     ../src/parser.cpp
+    ../legacy_parser/src/Compiler/AST/Lexer.cpp
+    ../legacy_parser/src/Compiler/AST/Node.cpp
+    ../legacy_parser/src/Compiler/AST/Parser.cpp
+    ../legacy_parser/src/Compiler/AST/makeErrorCtx.cpp
 )
 target_link_libraries(bench benchmark::benchmark)
-
-if (MSVC)
-    target_compile_options(bench PRIVATE /W4)
-else()
-    target_compile_options(bench PRIVATE -Wall -Wextra -Wshadow -Wconversion -Wpedantic -Werror)
-endif()
+target_include_directories(bench PUBLIC ../legacy_parser/include)
 
 set_target_properties(
     bench
