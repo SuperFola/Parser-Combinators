@@ -40,6 +40,18 @@ jobs:
       matrix:
         config:
           - {
+            os: ubuntu-latest, name: "Ubuntu Clang 14", cc: "clang-14", cxx: "clang++-14",
+            artifact: "ubuntu-clang-14", sanitizers: "On"
+          }
+          - {
+            os: ubuntu-latest, name: "Ubuntu Clang 13", cc: "clang-13", cxx: "clang++-13",
+            artifact: "ubuntu-clang-13", sanitizers: "On"
+          }
+          - {
+            os: ubuntu-latest, name: "Ubuntu Clang 12", cc: "clang-12", cxx: "clang++-12",
+            artifact: "ubuntu-clang-12", sanitizers: "On"
+          }
+          - {
             os: ubuntu-latest, name: "Ubuntu Clang 11", cc: "clang-11", cxx: "clang++-11",
             artifact: "ubuntu-clang-11", sanitizers: "On"
           }
@@ -48,12 +60,16 @@ jobs:
             artifact: "ubuntu-clang-11-valgrind", sanitizers: "Off"
           }
           - {
-            os: ubuntu-latest, name: "Ubuntu Clang 10", cc: "clang-10", cxx: "clang++-10",
+            os: ubuntu-20.04, name: "Ubuntu Clang 10", cc: "clang-10", cxx: "clang++-10",
             artifact: "ubuntu-clang-10", sanitizers: "On"
           }
           - {
-            os: ubuntu-latest, name: "Ubuntu Clang 9", cc: "clang-9", cxx: "clang++-9",
+            os: ubuntu-20.04, name: "Ubuntu Clang 9", cc: "clang-9", cxx: "clang++-9",
             artifact: "ubuntu-clang-9", sanitizers: "On"
+          }
+          - {
+            os: ubuntu-latest, name: "Ubuntu GCC 12", cc: "gcc-12", cxx: "g++-12",
+            artifact: "ubuntu-gcc-12", sanitizers: "Off"
           }
           - {
             os: ubuntu-latest, name: "Ubuntu GCC 11", cc: "gcc-11", cxx: "g++-11",
@@ -68,7 +84,7 @@ jobs:
             artifact: "ubuntu-gcc-9", sanitizers: "Off"
           }
           - {
-            os: ubuntu-latest, name: "Ubuntu GCC 8", cc: "gcc-8", cxx: "g++-8",
+            os: ubuntu-20.04, name: "Ubuntu GCC 8", cc: "gcc-8", cxx: "g++-8",
             artifact: "ubuntu-gcc-8", sanitizers: "Off"
           }
           - {
@@ -153,13 +169,17 @@ jobs:
       fail-fast: false
       matrix:
         config:
+          - { os: ubuntu-latest,  name: "Ubuntu Clang 14", artifact: "ubuntu-clang-14" }
+          - { os: ubuntu-latest,  name: "Ubuntu Clang 13", artifact: "ubuntu-clang-13" }
+          - { os: ubuntu-latest,  name: "Ubuntu Clang 12", artifact: "ubuntu-clang-12" }
           - { os: ubuntu-latest,  name: "Ubuntu Clang 11", artifact: "ubuntu-clang-11" }
-          - { os: ubuntu-latest,  name: "Ubuntu Clang 10", artifact: "ubuntu-clang-10" }
-          - { os: ubuntu-latest,  name: "Ubuntu Clang 9",  artifact: "ubuntu-clang-9" }
+          - { os: ubuntu-20.04,  name: "Ubuntu Clang 10", artifact: "ubuntu-clang-10" }
+          - { os: ubuntu-20.04,  name: "Ubuntu Clang 9",  artifact: "ubuntu-clang-9" }
+          - { os: ubuntu-latest,  name: "Ubuntu GCC 12",   artifact: "ubuntu-gcc-12" }
           - { os: ubuntu-latest,  name: "Ubuntu GCC 11",   artifact: "ubuntu-gcc-11" }
           - { os: ubuntu-latest,  name: "Ubuntu GCC 10",   artifact: "ubuntu-gcc-10" }
           - { os: ubuntu-latest,  name: "Ubuntu GCC 9",    artifact: "ubuntu-gcc-9" }
-          - { os: ubuntu-latest,  name: "Ubuntu GCC 8",    artifact: "ubuntu-gcc-8" }
+          - { os: ubuntu-20.04,  name: "Ubuntu GCC 8",    artifact: "ubuntu-gcc-8" }
           - { os: windows-latest, name: "Windows VS 2019", artifact: "windows-msvc-19", }
           - { os: windows-latest, name: "Windows VS 2017", artifact: "windows-msvc-17", }
           - { os: macos-latest,   name: "MacOS Clang 12",  artifact: "macos-clang-12", }
