@@ -1,4 +1,5 @@
 #include <benchmark/benchmark.h>
+
 #include <fstream>
 #include <string>
 
@@ -11,40 +12,34 @@ std::string readFile(const std::string& filename)
     return code;
 }
 
-static void Simple(benchmark::State& state)
+constexpr int simple = 0, medium = 1, big = 2;
+
+static void BM_Parse(benchmark::State& state)
 {
-    const std::string code = readFile("simple.ark");
+    const long selection = state.range(0);
+    const std::string filename = (selection == simple) ? "simple.ark" : ((selection == medium) ? "medium.ark" : "big.ark");
+    const std::string code = readFile(filename);
+
+    long long nodes = 0;
+    long long backtracks = 0;
+
     for (auto _ : state)
     {
         Parser parser(code, false);
         parser.parse();
+
+        nodes += parser.ast().list().size();
+        backtracks += parser.backtrack_count;
     }
+
+    state.counters["nodesRate"] = benchmark::Counter(nodes, benchmark::Counter::kIsRate);
+    state.counters["nodesAvg"] = benchmark::Counter(nodes, benchmark::Counter::kAvgThreads);
+    state.counters["backtracksRate"] = benchmark::Counter(backtracks, benchmark::Counter::kIsRate);
+    state.counters["backtracksAvg"] = benchmark::Counter(backtracks, benchmark::Counter::kAvgThreads);
 }
 
-BENCHMARK(Simple)->Name("Simple - 39 nodes")->Unit(benchmark::kMillisecond);
-
-static void Medium(benchmark::State& state)
-{
-    const std::string code = readFile("medium.ark");
-    for (auto _ : state)
-    {
-        Parser parser(code, false);
-        parser.parse();
-    }
-}
-
-BENCHMARK(Medium)->Name("Medium - 83 nodes")->Unit(benchmark::kMillisecond);
-
-static void Big(benchmark::State& state)
-{
-    const std::string code = readFile("big.ark");
-    for (auto _ : state)
-    {
-        Parser parser(code, false);
-        parser.parse();
-    }
-}
-
-BENCHMARK(Big)->Name("Big - 665 nodes")->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_Parse)->Name("Simple - 39 nodes")->Arg(simple)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_Parse)->Name("Medium - 83 nodes")->Arg(medium)->Unit(benchmark::kMillisecond);
+BENCHMARK(BM_Parse)->Name("Big - 665 nodes")->Arg(big)->Unit(benchmark::kMillisecond);
 
 BENCHMARK_MAIN();

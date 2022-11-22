@@ -13,6 +13,7 @@ public:
     Parser(const std::string& code, bool debug);
 
     void parse();
+    const Node& ast() const;
 
 private:
     Node m_ast;

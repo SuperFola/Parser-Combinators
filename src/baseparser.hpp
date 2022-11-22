@@ -26,6 +26,9 @@ class BaseParser
 public:
     BaseParser(const std::string& s);
 
+    // for debug purpose
+    unsigned long backtrack_count;
+
 private:
     std::string m_in;
     std::size_t m_count;

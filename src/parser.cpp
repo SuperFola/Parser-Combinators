@@ -29,6 +29,11 @@ void Parser::parse()
     }
 }
 
+const Node& Parser::ast() const
+{
+    return m_ast;
+}
+
 bool Parser::comment()
 {
     if (accept(IsChar('#')))
@@ -48,7 +53,7 @@ std::optional<Node> Parser::node()
             return wrapped(&Parser::letMutSet, '(', ')');
         },
         [this]() -> std::optional<Node> {
-            return wrapped(&Parser::del, '(', ')');
+            return wrapped(&Parser::function, '(', ')');
         },
         [this]() -> std::optional<Node> {
             return wrapped(&Parser::condition, '(', ')');
@@ -63,10 +68,10 @@ std::optional<Node> Parser::node()
             return block();
         },
         [this]() -> std::optional<Node> {
-            return wrapped(&Parser::function, '(', ')');
+            return wrapped(&Parser::macro, '(', ')');
         },
         [this]() -> std::optional<Node> {
-            return wrapped(&Parser::macro, '(', ')');
+            return wrapped(&Parser::del, '(', ')');
         },
         [this]() -> std::optional<Node> {
             return functionCall();

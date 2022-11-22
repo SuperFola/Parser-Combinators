@@ -3,7 +3,7 @@
 #include <iostream>
 
 BaseParser::BaseParser(const std::string& s) :
-    m_in(s), m_count(0), m_row(0), m_col(0)
+    backtrack_count(0), m_in(s), m_count(0), m_row(0), m_col(0)
 {
     // if the input string is empty, raise an error
     if (s.size() == 0)
@@ -34,6 +34,8 @@ void BaseParser::next()
 
 void BaseParser::backtrack(std::size_t n)
 {
+    backtrack_count++;
+
     m_count = n;
     m_sym = m_in[m_count - 1];
 
