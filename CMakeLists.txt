@@ -24,10 +24,4 @@ if (ENABLE_SANITIZERS)
     add_undefined_sanitizer()
 endif()
 
-set_target_properties(
-    parser
-    PROPERTIES
-        CXX_STANDARD 17
-        CXX_STANDARD_REQUIRED ON
-        CXX_EXTENSIONS OFF
-)
+target_compile_features(parser PRIVATE cxx_std_17)

@@ -16,11 +16,4 @@ add_executable(bench
 )
 target_link_libraries(bench benchmark::benchmark)
 target_include_directories(bench PUBLIC ../legacy_parser/include)
-
-set_target_properties(
-    bench
-    PROPERTIES
-        CXX_STANDARD 17
-        CXX_STANDARD_REQUIRED ON
-        CXX_EXTENSIONS OFF
-)
+target_compile_features(bench PRIVATE cxx_std_17)

@@ -40,6 +40,8 @@ Subparsers:
 - [x] atom
   - [x] number
   - [x] string
+    - [ ] handle `\uxxxxx`, `\Uxxxxx`, `\xabc` in strings
+    - [ ] handle other espace sequences: n, r, t, a, b, f, 0, \, "
   - [x] boolean
   - [x] nil
   - [x] symbol
@@ -69,7 +71,7 @@ At ' ' @ 1:12
 This is for ArkScript, but some things had to change for the next version of the language, implemented by this parser.
 
 - quote is no longer supported, use functions with no arguments instead
-- import do not work the same way as before: (import "path.ark") won't work, we are using a package like syntax now:
+- import do not work the same way as before: `(import "path.ark")` won't work, we are using a package like syntax now:
 ```lisp
 (import a)
 (import a.b)  # everything is prefixed by b
