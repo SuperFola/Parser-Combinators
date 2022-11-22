@@ -258,7 +258,7 @@ std::optional<Node> Parser::import_()
                 if (!name(&symbol))
                     errorWithNextToken("Expected a valid symbol to import");
 
-                if (symbol[symbol.size() - 2] == ':' && symbol.back() == '*')
+                if (symbol.size() >= 2 && symbol[symbol.size() - 2] == ':' && symbol.back() == '*')
                 {
                     backtrack(getCount() - 2);
                     error("Star pattern can not follow a symbol to import", ":*");
