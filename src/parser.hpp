@@ -6,6 +6,8 @@
 
 #include <string>
 #include <optional>
+#include <vector>
+#include <functional>
 
 class Parser : public BaseParser
 {
@@ -18,6 +20,7 @@ public:
 private:
     Node m_ast;
     bool m_debug;
+    std::vector<std::function<std::optional<Node>()>> m_node_parsers;
 
     bool comment();
     std::optional<Node> node();

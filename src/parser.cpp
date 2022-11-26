@@ -1,11 +1,43 @@
 #include "parser.hpp"
 
 #include <iostream>
-#include <functional>
 
 Parser::Parser(const std::string& code, bool debug) :
     BaseParser(code), m_ast(NodeType::List), m_debug(debug)
-{}
+{
+    m_node_parsers = {
+        [this]() -> std::optional<Node> {
+            return wrapped(&Parser::letMutSet, '(', ')');
+        },
+        [this]() -> std::optional<Node> {
+            return wrapped(&Parser::function, '(', ')');
+        },
+        [this]() -> std::optional<Node> {
+            return wrapped(&Parser::condition, '(', ')');
+        },
+        [this]() -> std::optional<Node> {
+            return wrapped(&Parser::loop, '(', ')');
+        },
+        [this]() -> std::optional<Node> {
+            return import_();
+        },
+        [this]() -> std::optional<Node> {
+            return block();
+        },
+        [this]() -> std::optional<Node> {
+            return wrapped(&Parser::macro, '(', ')');
+        },
+        [this]() -> std::optional<Node> {
+            return wrapped(&Parser::del, '(', ')');
+        },
+        [this]() -> std::optional<Node> {
+            return functionCall();
+        },
+        [this]() -> std::optional<Node> {
+            return list();
+        },
+    };
+}
 
 void Parser::parse()
 {
@@ -48,45 +80,12 @@ bool Parser::comment()
 
 std::optional<Node> Parser::node()
 {
-    std::vector<std::function<std::optional<Node>()>> methods = {
-        [this]() -> std::optional<Node> {
-            return wrapped(&Parser::letMutSet, '(', ')');
-        },
-        [this]() -> std::optional<Node> {
-            return wrapped(&Parser::function, '(', ')');
-        },
-        [this]() -> std::optional<Node> {
-            return wrapped(&Parser::condition, '(', ')');
-        },
-        [this]() -> std::optional<Node> {
-            return wrapped(&Parser::loop, '(', ')');
-        },
-        [this]() -> std::optional<Node> {
-            return import_();
-        },
-        [this]() -> std::optional<Node> {
-            return block();
-        },
-        [this]() -> std::optional<Node> {
-            return wrapped(&Parser::macro, '(', ')');
-        },
-        [this]() -> std::optional<Node> {
-            return wrapped(&Parser::del, '(', ')');
-        },
-        [this]() -> std::optional<Node> {
-            return functionCall();
-        },
-        [this]() -> std::optional<Node> {
-            return list();
-        },
-    };
-
     // save current position in buffer to be able to go back if needed
     auto position = getCount();
 
-    for (std::size_t i = 0, end = methods.size(); i < end; ++i)
+    for (std::size_t i = 0, end = m_node_parsers.size(); i < end; ++i)
     {
-        auto result = methods[i]();
+        auto result = m_node_parsers[i]();
 
         if (result.has_value())
             return result;
