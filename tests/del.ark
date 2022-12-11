@@ -5,11 +5,11 @@
 )
 
 (
-    del
+    del # a
     c
 )
 
-(
+(#r
 del
-d
+d #""
 )

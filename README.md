@@ -46,7 +46,7 @@ Subparsers:
   - [x] nil
   - [x] symbol
 - [x] comment
-  - [ ] comments in blocks and not only top level ones
+  - [x] comments in blocks and not only top level ones
 - [x] function calls
   - [ ] anonymous calls: ((fun () (print 1)))
 - [x] identifiers

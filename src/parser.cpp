@@ -43,9 +43,7 @@ void Parser::parse()
 {
     while (!isEOF())
     {
-        space();
-        while (!isEOF() && comment())
-            space();
+        newlineOrComment();
         if (isEOF())
             break;
 
@@ -78,6 +76,18 @@ bool Parser::comment()
     return false;
 }
 
+bool Parser::newlineOrComment()
+{
+    bool matched = space();
+    while (!isEOF() && comment())
+    {
+        space();
+        matched = true;
+    }
+
+    return matched;
+}
+
 std::optional<Node> Parser::node()
 {
     // save current position in buffer to be able to go back if needed
@@ -101,12 +111,12 @@ std::optional<Node> Parser::letMutSet()
     std::string keyword;
     if (!oneOf({ "let", "mut", "set" }, &keyword))
         return std::nullopt;
-    space();
+    newlineOrComment();
 
     std::string symbol;
     if (!name(&symbol))
         errorWithNextToken(keyword + " needs a symbol");
-    space();
+    newlineOrComment();
 
     Node leaf(NodeType::List);
     leaf.push_back(Node(NodeType::Keyword, keyword));
@@ -126,7 +136,7 @@ std::optional<Node> Parser::del()
     if (!oneOf({ "del" }, &keyword))
         return std::nullopt;
 
-    space();
+    newlineOrComment();
 
     std::string symbol;
     if (!name(&symbol))
@@ -145,7 +155,7 @@ std::optional<Node> Parser::condition()
     if (!oneOf({ "if" }, &keyword))
         return std::nullopt;
 
-    space();
+    newlineOrComment();
 
     Node leaf(NodeType::List);
     leaf.push_back(Node(NodeType::Keyword, keyword));
@@ -155,19 +165,19 @@ std::optional<Node> Parser::condition()
     else
         errorWithNextToken("If need a valid condition");
 
-    space();
+    newlineOrComment();
 
     if (auto value_if_true = nodeOrValue(); value_if_true.has_value())
         leaf.push_back(value_if_true.value());
     else
         errorWithNextToken("Expected a value");
 
-    space();
+    newlineOrComment();
 
     if (auto value_if_false = nodeOrValue(); value_if_false.has_value())
     {
         leaf.push_back(value_if_false.value());
-        space();
+        newlineOrComment();
     }
 
     return leaf;
@@ -179,7 +189,7 @@ std::optional<Node> Parser::loop()
     if (!oneOf({ "while" }, &keyword))
         return std::nullopt;
 
-    space();
+    newlineOrComment();
 
     Node leaf(NodeType::List);
     leaf.push_back(Node(NodeType::Keyword, keyword));
@@ -189,7 +199,7 @@ std::optional<Node> Parser::loop()
     else
         errorWithNextToken("While need a valid condition");
 
-    space();
+    newlineOrComment();
 
     if (auto body = nodeOrValue(); body.has_value())
         leaf.push_back(body.value());
@@ -207,12 +217,12 @@ std::optional<Node> Parser::import_()
 
     if (!accept(IsChar('(')))
         return std::nullopt;
-    space();
+    newlineOrComment();
 
     std::string keyword;
     if (!oneOf({ "import" }, &keyword))
         return std::nullopt;
-    space();
+    newlineOrComment();
 
     Node leaf(NodeType::List);
     leaf.push_back(Node(NodeType::Keyword, keyword));
@@ -252,7 +262,7 @@ std::optional<Node> Parser::import_()
     }
 
     // then parse the symbols to import, it any
-    if (space())
+    if (newlineOrComment())
     {
         while (true)
         {
@@ -271,7 +281,7 @@ std::optional<Node> Parser::import_()
                 symbols.push_back(Node(NodeType::Symbol, symbol));
             }
 
-            if (!space())
+            if (!newlineOrComment())
                 break;
         }
     }
@@ -279,7 +289,7 @@ std::optional<Node> Parser::import_()
     leaf.push_back(packageNode);
     leaf.push_back(symbols);
 
-    space();
+    newlineOrComment();
     expect(IsChar(')'));
     return leaf;
 }
@@ -289,7 +299,7 @@ std::optional<Node> Parser::block()
     bool alt_syntax = false;
     if (accept(IsChar('(')))
     {
-        space();
+        newlineOrComment();
         if (!oneOf({ "begin" }))
             return std::nullopt;
     }
@@ -297,7 +307,7 @@ std::optional<Node> Parser::block()
         alt_syntax = true;
     else
         return std::nullopt;
-    space();
+    newlineOrComment();
 
     Node leaf(NodeType::List);
     leaf.push_back(Node(NodeType::Keyword, "begin"));
@@ -307,13 +317,13 @@ std::optional<Node> Parser::block()
         if (auto value = nodeOrValue(); value.has_value())
         {
             leaf.push_back(value.value());
-            space();
+            newlineOrComment();
         }
         else
             break;
     }
 
-    space();
+    newlineOrComment();
     expect(IsChar(!alt_syntax ? ')' : '}'));
     return leaf;
 }
@@ -323,10 +333,10 @@ std::optional<Node> Parser::function()
     std::string keyword;
     if (!oneOf({ "fun" }, &keyword))
         return std::nullopt;
-    space();
+    newlineOrComment();
 
     expect(IsChar('('));
-    space();
+    newlineOrComment();
 
     Node args(NodeType::List);
     bool has_captures = false;
@@ -341,7 +351,7 @@ std::optional<Node> Parser::function()
                 break;
             else
             {
-                space();
+                newlineOrComment();
                 args.push_back(Node(NodeType::Capture, capture));
             }
         }
@@ -358,14 +368,14 @@ std::optional<Node> Parser::function()
                     error("Captured variables should be at the end of the argument list", symbol);
                 }
 
-                space();
+                newlineOrComment();
                 args.push_back(Node(NodeType::Symbol, symbol));
             }
         }
     }
 
     expect(IsChar(')'));
-    space();
+    newlineOrComment();
 
     Node leaf(NodeType::List);
     leaf.push_back(Node(NodeType::Keyword, keyword));
@@ -384,12 +394,12 @@ std::optional<Node> Parser::macro()
     std::string keyword;
     if (!oneOf({ "macro" }, &keyword))
         return std::nullopt;
-    space();
+    newlineOrComment();
 
     std::string symbol;
     if (!name(&symbol))
         errorWithNextToken(keyword + " needs a symbol");
-    space();
+    newlineOrComment();
 
     Node leaf(NodeType::List);
     leaf.push_back(Node(NodeType::Keyword, keyword));
@@ -397,7 +407,7 @@ std::optional<Node> Parser::macro()
 
     if (accept(IsChar('(')))
     {
-        space();
+        newlineOrComment();
         Node args = Node(NodeType::List);
 
         while (true)
@@ -407,13 +417,13 @@ std::optional<Node> Parser::macro()
                 break;
             else
             {
-                space();
+                newlineOrComment();
                 args.push_back(Node(NodeType::Symbol, arg_name));
             }
         }
 
         expect(IsChar(')'));
-        space();
+        newlineOrComment();
 
         leaf.push_back(args);
     }
@@ -430,12 +440,12 @@ std::optional<Node> Parser::functionCall()
 {
     if (!accept(IsChar('(')))
         return std::nullopt;
-    space();
+    newlineOrComment();
 
     std::optional<Node> func = anyAtomOf({ NodeType::Symbol, NodeType::Field });
     if (!func.has_value())
         return std::nullopt;
-    space();
+    newlineOrComment();
 
     Node leaf(NodeType::List);
     leaf.push_back(func.value());
@@ -444,14 +454,14 @@ std::optional<Node> Parser::functionCall()
     {
         if (auto arg = nodeOrValue(); arg.has_value())
         {
-            space();
+            newlineOrComment();
             leaf.push_back(arg.value());
         }
         else
             break;
     }
 
-    space();
+    newlineOrComment();
     expect(IsChar(')'));
     return leaf;
 }
@@ -460,7 +470,7 @@ std::optional<Node> Parser::list()
 {
     if (!accept(IsChar('[')))
         return std::nullopt;
-    space();
+    newlineOrComment();
 
     Node leaf(NodeType::List);
     leaf.push_back(Node(NodeType::Symbol, "list"));
@@ -470,13 +480,13 @@ std::optional<Node> Parser::list()
         if (auto value = nodeOrValue(); value.has_value())
         {
             leaf.push_back(value.value());
-            space();
+            newlineOrComment();
         }
         else
             break;
     }
 
-    space();
+    newlineOrComment();
     expect(IsChar(']'));
     return leaf;
 }
@@ -580,13 +590,13 @@ std::optional<Node> Parser::wrapped(std::optional<Node> (Parser::*parser)(), cha
 {
     if (!accept(IsChar(prefix)))
         return std::nullopt;
-    space();
+    newlineOrComment();
 
     std::optional<Node> node = (this->*parser)();
 
     if (node)
     {
-        space();
+        newlineOrComment();
         if (accept(IsChar(suffix)))
             return node;
         else

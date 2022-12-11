@@ -23,6 +23,8 @@ private:
     std::vector<std::function<std::optional<Node>()>> m_node_parsers;
 
     bool comment();
+    bool newlineOrComment();
+
     std::optional<Node> node();
     std::optional<Node> letMutSet();
     std::optional<Node> del();

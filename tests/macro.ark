@@ -1,12 +1,13 @@
 (macro a 1)
 (macro b () 2)
 (macro
-c
-(
-d
+c # macro name
+( # arg list
+d # macro argument
 e
 )
-3)
+3 # body
+)
 (macro f(g)4)
 (macro h(i j) (let a 1))
 

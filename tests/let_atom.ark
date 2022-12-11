@@ -8,14 +8,14 @@ set c "")
 #comment###
 (
 let
-b
-"12"
+b # my symbol
+"12"#value
 )
 
 (let d (if 1 2 3))
 (let e
 (
-while
+while #keyword
 4
 5
 ))

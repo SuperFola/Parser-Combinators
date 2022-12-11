@@ -1,6 +1,7 @@
 (func a b)
 (
-func
-(if 1 2 3)
-"hello"
-)
+func# A
+(if 1 2 #c
+3)
+"hello"#d
+) #y
