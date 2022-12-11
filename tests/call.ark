@@ -5,3 +5,11 @@ func# A
 3)
 "hello"#d
 ) #y
+((foo bar) (test) 1)
+(
+    (
+        (
+            foo
+        )
+    )
+)

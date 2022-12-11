@@ -442,8 +442,12 @@ std::optional<Node> Parser::functionCall()
         return std::nullopt;
     newlineOrComment();
 
-    std::optional<Node> func = anyAtomOf({ NodeType::Symbol, NodeType::Field });
-    if (!func.has_value())
+    std::optional<Node> func = std::nullopt;
+    if (auto atom = anyAtomOf({ NodeType::Symbol, NodeType::Field }); atom.has_value())
+        func = atom;
+    else if (auto nested = node(); nested.has_value())
+        func = nested;
+    else
         return std::nullopt;
     newlineOrComment();
 

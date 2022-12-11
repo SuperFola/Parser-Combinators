@@ -20,3 +20,4 @@ dddd
 
 (fun (a b) (if 1 2 3))
 (fun (a b) (let c (if 1 2 3)))
+((fun (a) a) 1)
