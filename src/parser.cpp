@@ -37,6 +37,61 @@ Parser::Parser(const std::string& code, bool debug) :
             return list();
         },
     };
+
+    m_atom_parsers = {
+        // numbers
+        [this]() -> std::optional<Node> {
+            std::string res;
+            if (signedNumber(&res))
+                return Node(std::stoi(res));  // FIXME stoi?
+            return std::nullopt;
+        },
+        // strings
+        [this]() -> std::optional<Node> {
+            std::string res;
+            if (accept(IsChar('"')))
+            {
+                while (accept(IsNot(IsChar('"')), &res))
+                    ;
+                expect(IsChar('"'));
+
+                return Node(NodeType::String, res);
+            }
+            return std::nullopt;
+        },
+        // field
+        [this]() -> std::optional<Node> {
+            std::string symbol;
+            if (!name(&symbol))
+                return std::nullopt;
+
+            Node leaf = Node(NodeType::Field);
+            leaf.push_back(Node(NodeType::Symbol, symbol));
+
+            while (true)
+            {
+                space();
+                if (leaf.list().size() == 1 && !accept(IsChar('.')))  // Symbol:abc
+                    return std::nullopt;
+
+                if (leaf.list().size() > 1 && !accept(IsChar('.')))
+                    break;
+                std::string res;
+                if (!name(&res))
+                    errorWithNextToken("Expected a field name: <symbol>.<field>");
+                leaf.push_back(Node(NodeType::Symbol, res));
+            }
+
+            return leaf;
+        },
+        // true/false/nil/...
+        [this]() -> std::optional<Node> {
+            std::string res;
+            if (!name(&res))
+                return std::nullopt;
+            return Node(NodeType::Symbol, res);
+        }
+    };
 }
 
 void Parser::parse()
@@ -497,64 +552,9 @@ std::optional<Node> Parser::list()
 
 std::optional<Node> Parser::atom()
 {
-    std::vector<std::function<std::optional<Node>()>> parsers = {
-        // numbers
-        [this]() -> std::optional<Node> {
-            std::string res;
-            if (signedNumber(&res))
-                return Node(std::stoi(res));  // FIXME stoi?
-            return std::nullopt;
-        },
-        // strings
-        [this]() -> std::optional<Node> {
-            std::string res;
-            if (accept(IsChar('"')))
-            {
-                while (accept(IsNot(IsChar('"')), &res))
-                    ;
-                expect(IsChar('"'));
-
-                return Node(NodeType::String, res);
-            }
-            return std::nullopt;
-        },
-        // field
-        [this]() -> std::optional<Node> {
-            std::string symbol;
-            if (!name(&symbol))
-                return std::nullopt;
-
-            Node leaf = Node(NodeType::Field);
-            leaf.push_back(Node(NodeType::Symbol, symbol));
-
-            while (true)
-            {
-                space();
-                if (leaf.list().size() == 1 && !accept(IsChar('.')))  // Symbol:abc
-                    return std::nullopt;
-
-                if (leaf.list().size() > 1 && !accept(IsChar('.')))
-                    break;
-                std::string res;
-                if (!name(&res))
-                    errorWithNextToken("Expected a field name: <symbol>.<field>");
-                leaf.push_back(Node(NodeType::Symbol, res));
-            }
-
-            return leaf;
-        },
-        // true/false/nil/...
-        [this]() -> std::optional<Node> {
-            std::string res;
-            if (!name(&res))
-                return std::nullopt;
-            return Node(NodeType::Symbol, res);
-        }
-    };
-
     auto pos = getCount();
 
-    for (auto parser : parsers)
+    for (auto parser : m_atom_parsers)
     {
         auto result = parser();
         if (result.has_value())

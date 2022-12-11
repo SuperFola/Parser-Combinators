@@ -21,6 +21,7 @@ private:
     Node m_ast;
     bool m_debug;
     std::vector<std::function<std::optional<Node>()>> m_node_parsers;
+    std::vector<std::function<std::optional<Node>()>> m_atom_parsers;
 
     bool comment();
     bool newlineOrComment();
