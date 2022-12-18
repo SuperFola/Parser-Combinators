@@ -214,6 +214,60 @@ jobs:
         export ASAN_OPTIONS=use_odr_indicator=1
         (cd tests && ./run)
 
+  fuzzing:
+    runs-on: ubuntu-latest
+    name: Fuzz testing
+    needs: [build]
+
+    container:
+      image: aflplusplus/aflplusplus:4.04c
+      env:
+        BUILD_FOLDER: afl
+        FUZZER_SEED: 0
+        FUZZ_TIME_SEC: 300
+        FUZZER_MAX_MEMORY_MB: 64
+        AFL_NO_STARTUP_CALIBRATION: 1
+        AFL_CMPLOG_ONLY_NEW: 1
+      volumes:
+        - .:/src
+      options: --cpus 4
+
+    steps:
+      - name: Build with AFL
+        run: |
+          cmake -B${BUILD_FOLDER} \
+            -DCMAKE_C_COMPILER=afl-cc \
+            -DCMAKE_CXX_COMPILER=afl-c++ \
+            -DCMAKE_BUILD_TYPE=Release
+          cmake --build ${BUILD_FOLDER} --config Release
+
+      - name: Generate corpus
+        run: |
+          mkdir -p unique
+          mkdir -p input
+          mkdir -p tmp
+          cp tests/*.ark tmp/
+          afl-cmin -i tmp -o unique -- ${BUILD_FOLDER}/parser @@ -debug
+          cd unique
+          for i in *; do
+            afl-tmin -i "$i" -o "../input/$i" -- ../${BUILD_FOLDER}/parser @@ -debug
+          done
+
+      - name: Fuzz
+        run: |
+          afl-fuzz -i input \
+            -o output \
+            -s $FUZZER_SEED \
+            -m $FUZZER_MAX_MEMORY_MB \
+            -V $FUZZ_TIME_SEC \
+            -S main \
+            -- ${BUILD_FOLDER}/parser @@ -debug
+
+      - name: Sumarize
+        run: |
+          afl-whatsup -s output
+          afl-showmap -C -i output -o /dev/null -- ./${BUILD_FOLDER}/parser @@ -debug
+
   valgrind:
     runs-on: ubuntu-latest
     name: Ubuntu Clang 11 Valgrind
