@@ -51,7 +51,6 @@ Parser::Parser(const std::string& code, bool debug) :
             std::string res;
             if (accept(IsChar('"')))
             {
-                std::cout << "pos:" << getCount() << " string:" << res << std::endl;
                 while (true)
                 {
                     if (accept(IsChar('\\')))

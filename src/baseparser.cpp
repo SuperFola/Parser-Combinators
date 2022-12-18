@@ -28,7 +28,7 @@ void BaseParser::next()
         ++m_row;
         m_col = 0;
     }
-    else if (std::isprint(previous_sym))
+    else if (0 <= m_sym && std::isprint(previous_sym))
         ++m_col;
 }
 
@@ -49,7 +49,7 @@ void BaseParser::backtrack(std::size_t n)
             ++m_row;
             m_col = 0;
         }
-        else if (std::isprint(m_in[i]))
+        else if (0 <= m_in[i] && std::isprint(m_in[i]))
             ++m_col;
     }
 }
