@@ -41,7 +41,7 @@ Subparsers:
   - [x] number
   - [x] string
     - [ ] handle `\uxxxxx`, `\Uxxxxx`, `\xabc` in strings
-    - [ ] handle other espace sequences: n, r, t, a, b, f, 0, \, "
+    - [x] handle other espace sequences: n, r, t, a, b, f, 0, \, "
   - [x] boolean
   - [x] nil
   - [x] symbol

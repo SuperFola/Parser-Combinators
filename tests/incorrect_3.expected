@@ -1,0 +1,5 @@
+ERROR
+Unknown escape sequence
+At ' ' @ 1:12
+    1 | (print "\i bla bla bla")
+      |           ^^

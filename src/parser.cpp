@@ -51,9 +51,39 @@ Parser::Parser(const std::string& code, bool debug) :
             std::string res;
             if (accept(IsChar('"')))
             {
-                while (accept(IsNot(IsChar('"')), &res))
-                    ;
-                expect(IsChar('"'));
+                while (true)
+                {
+                    if (accept(IsChar('\\')))
+                    {
+                        if (accept(IsChar('"')))
+                            res += '\"';
+                        else if (accept(IsChar('\\')))
+                            res += '\\';
+                        else if (accept(IsChar('n')))
+                            res += '\n';
+                        else if (accept(IsChar('t')))
+                            res += '\t';
+                        else if (accept(IsChar('v')))
+                            res += '\v';
+                        else if (accept(IsChar('r')))
+                            res += '\r';
+                        else if (accept(IsChar('a')))
+                            res += '\a';
+                        else if (accept(IsChar('b')))
+                            res += '\b';
+                        else if (accept(IsChar('0')))
+                            res += '\0';
+                        else
+                            errorWithNextToken("Unknown escape sequence");
+                    }
+                    else
+                        accept(IsNot(IsEither(IsChar('\\'), IsChar('"'))), &res);
+
+                    if (accept(IsChar('"')))
+                        break;
+                    // accept(\Uxxxxx)
+                    // accept(\uxxxxx)
+                }
 
                 return Node(NodeType::String, res);
             }
