@@ -248,18 +248,13 @@ jobs:
       - name: Generate corpus
         run: |
           mkdir -p unique
-          mkdir -p input
           mkdir -p tmp
           cp tests/*.ark tmp/
           afl-cmin -i tmp -o unique -- ${BUILD_FOLDER}/parser @@ -debug
-          cd unique
-          for i in *; do
-            afl-tmin -i "$i" -o "../input/$i" -- ../${BUILD_FOLDER}/parser @@ -debug
-          done
 
       - name: Fuzz
         run: |
-          afl-fuzz -i input \
+          afl-fuzz -i unique \
             -o output \
             -s $FUZZER_SEED \
             -m $FUZZER_MAX_MEMORY_MB \
