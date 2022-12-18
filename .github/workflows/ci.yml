@@ -268,6 +268,12 @@ jobs:
           afl-whatsup -s -d output
           afl-showmap -C -i output -o /dev/null -- ./${BUILD_FOLDER}/parser @@ -debug
 
+      - name: Upload crashes
+        uses: actions/upload-artifact@v3
+        with:
+          name: crashes
+          path: output/default/crashes/id:*
+
   valgrind:
     runs-on: ubuntu-latest
     name: Ubuntu Clang 11 Valgrind
