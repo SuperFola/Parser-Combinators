@@ -163,7 +163,7 @@ jobs:
   tests:
     runs-on: ${{ matrix.config.os }}
     name: Test on ${{ matrix.config.name }}
-    needs: [build]
+    needs: [fuzzing] # change back to build
 
     strategy:
       fail-fast: false
@@ -229,10 +229,14 @@ jobs:
         AFL_NO_STARTUP_CALIBRATION: 1
         AFL_CMPLOG_ONLY_NEW: 1
       volumes:
-        - $(pwd):/src
+        - ${{ github.workspace }}:/src
       options: --cpus 2
 
     steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
       - name: Build with AFL
         run: |
           cmake -B${BUILD_FOLDER} \
