@@ -225,6 +225,7 @@ jobs:
         BUILD_FOLDER: afl
         FUZZER_SEED: 0
         FUZZ_TIME_SEC: 300
+        FUZZER_TIMEOUT_EXEC_MS: 50
         FUZZER_MAX_MEMORY_MB: 64
         AFL_NO_STARTUP_CALIBRATION: 1
         AFL_CMPLOG_ONLY_NEW: 1
@@ -258,13 +259,13 @@ jobs:
             -o output \
             -s $FUZZER_SEED \
             -m $FUZZER_MAX_MEMORY_MB \
+            -t $FUZZER_TIMEOUT_EXEC_MS \
             -V $FUZZ_TIME_SEC \
-            -S main \
             -- ${BUILD_FOLDER}/parser @@ -debug
 
       - name: Sumarize
         run: |
-          afl-whatsup -s output
+          afl-whatsup -s -d output
           afl-showmap -C -i output -o /dev/null -- ./${BUILD_FOLDER}/parser @@ -debug
 
   valgrind:
