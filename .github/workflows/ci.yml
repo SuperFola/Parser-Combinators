@@ -217,7 +217,7 @@ jobs:
   fuzzing:
     runs-on: ubuntu-latest
     name: Fuzz testing
-    needs: [build]
+    needs: []  # temp, add build later on
 
     container:
       image: aflplusplus/aflplusplus:4.04c
@@ -229,8 +229,8 @@ jobs:
         AFL_NO_STARTUP_CALIBRATION: 1
         AFL_CMPLOG_ONLY_NEW: 1
       volumes:
-        - .:/src
-      options: --cpus 4
+        - $(pwd):/src
+      options: --cpus 2
 
     steps:
       - name: Build with AFL
