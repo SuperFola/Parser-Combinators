@@ -74,7 +74,10 @@ Parser::Parser(const std::string& code, bool debug) :
                         else if (accept(IsChar('0')))
                             res += '\0';
                         else
-                            errorWithNextToken("Unknown escape sequence");
+                        {
+                            backtrack(getCount() - 1);
+                            error("Unknown escape sequence", "\\");
+                        }
                     }
                     else
                         accept(IsNot(IsEither(IsChar('\\'), IsChar('"'))), &res);

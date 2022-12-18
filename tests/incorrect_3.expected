@@ -1,5 +1,5 @@
 ERROR
 Unknown escape sequence
-At ' ' @ 1:12
+At \ @ 1:10
     1 | (print "\i bla bla bla")
-      |           ^^
+      |         ^^
