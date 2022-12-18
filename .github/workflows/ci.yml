@@ -163,7 +163,7 @@ jobs:
   tests:
     runs-on: ${{ matrix.config.os }}
     name: Test on ${{ matrix.config.name }}
-    needs: [fuzzing] # change back to build
+    needs: [build]
 
     strategy:
       fail-fast: false
@@ -217,7 +217,7 @@ jobs:
   fuzzing:
     runs-on: ubuntu-latest
     name: Fuzz testing
-    needs: []  # temp, add build later on
+    needs: [build]
 
     container:
       image: aflplusplus/aflplusplus:4.04c
