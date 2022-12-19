@@ -58,6 +58,12 @@ Subparsers:
 - [x] special syntax for (list ...): [...]
 
 Error context generation:
+- [ ] better messages
+  - [x] what went wrong at the syntax level
+  - [ ] what went wrong at the language level
+  - [ ] possible fix
+- [ ] sometimes the wrong token is underlined
+Example:
 ```
 ERROR
 Package name expected after '.'
@@ -65,6 +71,12 @@ At ' ' @ 1:12
     1 | (import a. )
       |           ^
 ```
+
+Misc:
+- [ ] handle UTF-8
+  - [ ] store codepoints in `struct { unsigned int cp; std::string repr; };`
+  - [ ] homemade `std::is"char category"(codepoint)`
+  - [ ] decode UTF8 to calculate correctly the columns
 
 ## Breaking changes
 
