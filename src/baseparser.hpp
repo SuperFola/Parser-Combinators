@@ -43,11 +43,8 @@ private:
     void next();
 
 protected:
-    // TODO implement more error() helper functions (eg handle backtracking automatically?)
-    inline void error(const std::string& error, const std::string exp)
-    {
-        throw ParseError(error, m_row, m_col, exp, m_sym);
-    }
+    void error(const std::string& error, const std::string exp);
+    void errorWithNextToken(const std::string& message);
 
     // basic getters
     inline std::size_t getCol() { return m_col; }

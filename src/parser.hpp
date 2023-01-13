@@ -43,8 +43,6 @@ private:
     std::optional<Node> anyAtomOf(std::initializer_list<NodeType> types);
     std::optional<Node> nodeOrValue();
     std::optional<Node> wrapped(std::optional<Node> (Parser::*parser)(), char prefix, char suffix);  // TODO decompose in wrapped_begin and wrapped_end?
-
-    void errorWithNextToken(const std::string& message);  // TODO move this in the base parser
 };
 
 #endif
