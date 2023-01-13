@@ -22,7 +22,6 @@ private:
     Node m_ast;
     bool m_debug;
     std::vector<std::function<std::optional<Node>()>> m_node_parsers;  // TODO stop using std::function
-    std::vector<std::function<std::optional<Node>()>> m_atom_parsers;  // TODO stop using std::function
 
     bool comment();
     bool newlineOrComment();
@@ -38,6 +37,95 @@ private:
     std::optional<Node> macro();
     std::optional<Node> functionCall();
     std::optional<Node> list();
+
+    inline std::optional<Node> number()
+    {
+        std::string res;
+        if (signedNumber(&res))
+            return Node(std::stoi(res));  // FIXME is using stoi to create a number a good idea?
+        return std::nullopt;
+    }
+
+    inline std::optional<Node> string()
+    {
+        std::string res;
+        if (accept(IsChar('"')))
+        {
+            while (true)
+            {
+                if (accept(IsChar('\\')))
+                {
+                    if (accept(IsChar('"')))
+                        res += '\"';
+                    else if (accept(IsChar('\\')))
+                        res += '\\';
+                    else if (accept(IsChar('n')))
+                        res += '\n';
+                    else if (accept(IsChar('t')))
+                        res += '\t';
+                    else if (accept(IsChar('v')))
+                        res += '\v';
+                    else if (accept(IsChar('r')))
+                        res += '\r';
+                    else if (accept(IsChar('a')))
+                        res += '\a';
+                    else if (accept(IsChar('b')))
+                        res += '\b';
+                    else if (accept(IsChar('0')))
+                        res += '\0';
+                    else
+                    {
+                        backtrack(getCount() - 1);
+                        error("Unknown escape sequence", "\\");
+                    }
+                }
+                else
+                    accept(IsNot(IsEither(IsChar('\\'), IsChar('"'))), &res);
+
+                if (accept(IsChar('"')))
+                    break;
+                // accept(\Uxxxxx)
+                // accept(\uxxxxx)
+            }
+
+            return Node(NodeType::String, res);
+        }
+        return std::nullopt;
+    }
+
+    inline std::optional<Node> field()
+    {
+        std::string symbol;
+        if (!name(&symbol))
+            return std::nullopt;
+
+        Node leaf = Node(NodeType::Field);
+        leaf.push_back(Node(NodeType::Symbol, symbol));
+
+        while (true)
+        {
+            space();
+            if (leaf.list().size() == 1 && !accept(IsChar('.')))  // Symbol:abc
+                return std::nullopt;
+
+            if (leaf.list().size() > 1 && !accept(IsChar('.')))
+                break;
+            std::string res;
+            if (!name(&res))
+                errorWithNextToken("Expected a field name: <symbol>.<field>");
+            leaf.push_back(Node(NodeType::Symbol, res));
+        }
+
+        return leaf;
+    }
+
+    inline std::optional<Node> symbol()
+    {
+        std::string res;
+        if (!name(&res))
+            return std::nullopt;
+        return Node(NodeType::Symbol, res);
+    }
 
     std::optional<Node> atom();
     std::optional<Node> anyAtomOf(std::initializer_list<NodeType> types);
