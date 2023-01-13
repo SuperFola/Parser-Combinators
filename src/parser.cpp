@@ -643,10 +643,3 @@ std::optional<Node> Parser::wrapped(std::optional<Node> (Parser::*parser)(), cha
 
     return std::nullopt;
 }
-
-void Parser::errorWithNextToken(const std::string& message)
-{
-    std::string next_token;
-    anyUntil(IsInlineSpace, &next_token);
-    error(message, next_token);
-}

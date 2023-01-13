@@ -63,6 +63,18 @@ void BaseParser::backtrack(long n)
     // }
 }
 
+void BaseParser::error(const std::string& error, const std::string exp)
+{
+    throw ParseError(error, m_row, m_col, exp, m_sym);
+}
+
+void BaseParser::errorWithNextToken(const std::string& message)
+{
+    std::string next_token;
+    anyUntil(IsInlineSpace, &next_token);
+    error(message, next_token);
+}
+
 bool BaseParser::accept(const CharPred& t, std::string* s)
 {
     if (isEOF())
