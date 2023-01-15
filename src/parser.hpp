@@ -23,9 +23,6 @@ private:
     bool m_debug;
     std::vector<std::function<std::optional<Node>()>> m_node_parsers;  // TODO stop using std::function
 
-    bool comment();
-    bool newlineOrComment();
-
     std::optional<Node> node();
     std::optional<Node> letMutSet();
     std::optional<Node> del();

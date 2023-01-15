@@ -144,6 +144,30 @@ bool BaseParser::endOfLine(std::string* s)
     return false;
 }
 
+bool BaseParser::comment()
+{
+    if (accept(IsChar('#')))
+    {
+        while (accept(IsNot(IsChar('\n'))))
+            ;
+        accept(IsChar('\n'));
+        return true;
+    }
+    return false;
+}
+
+bool BaseParser::newlineOrComment()
+{
+    bool matched = space();
+    while (!isEOF() && comment())
+    {
+        space();
+        matched = true;
+    }
+
+    return matched;
+}
+
 bool BaseParser::number(std::string* s)
 {
     if (accept(IsDigit, s))
