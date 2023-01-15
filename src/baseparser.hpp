@@ -45,6 +45,7 @@ private:
 protected:
     void error(const std::string& error, const std::string exp);
     void errorWithNextToken(const std::string& message);
+    void errorMissingSuffix(char suffix, const std::string& node_name);
 
     // basic getters
     inline std::size_t getCol() { return m_col; }
@@ -76,6 +77,8 @@ protected:
     bool endOfLine(std::string* s = nullptr);
     bool comment();
     bool newlineOrComment();
+    bool prefix(char c);
+    bool suffix(char c);
     bool number(std::string* s = nullptr);
     bool signedNumber(std::string* s = nullptr);
     bool name(std::string* s = nullptr);

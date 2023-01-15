@@ -21,7 +21,6 @@ public:
 private:
     Node m_ast;
     bool m_debug;
-    std::vector<std::function<std::optional<Node>()>> m_node_parsers;  // TODO stop using std::function
 
     std::optional<Node> node();
     std::optional<Node> letMutSet();
@@ -127,7 +126,7 @@ private:
     std::optional<Node> atom();
     std::optional<Node> anyAtomOf(std::initializer_list<NodeType> types);
     std::optional<Node> nodeOrValue();
-    std::optional<Node> wrapped(std::optional<Node> (Parser::*parser)(), char prefix, char suffix);  // TODO decompose in wrapped_begin and wrapped_end?
+    std::optional<Node> wrapped(std::optional<Node> (Parser::*parser)(), const std::string& name, char prefix, char suffix);  // TODO decompose in wrapped_begin and wrapped_end?
 };
 
 #endif

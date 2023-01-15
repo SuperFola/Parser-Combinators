@@ -4,40 +4,7 @@
 
 Parser::Parser(const std::string& code, bool debug) :
     BaseParser(code), m_ast(NodeType::List), m_debug(debug)
-{
-    m_node_parsers = {
-        [this]() -> std::optional<Node> {
-            return wrapped(&Parser::letMutSet, '(', ')');
-        },
-        [this]() -> std::optional<Node> {
-            return wrapped(&Parser::function, '(', ')');
-        },
-        [this]() -> std::optional<Node> {
-            return wrapped(&Parser::condition, '(', ')');
-        },
-        [this]() -> std::optional<Node> {
-            return wrapped(&Parser::loop, '(', ')');
-        },
-        [this]() -> std::optional<Node> {
-            return import_();
-        },
-        [this]() -> std::optional<Node> {
-            return block();
-        },
-        [this]() -> std::optional<Node> {
-            return wrapped(&Parser::macro, '(', ')');
-        },
-        [this]() -> std::optional<Node> {
-            return wrapped(&Parser::del, '(', ')');
-        },
-        [this]() -> std::optional<Node> {
-            return functionCall();
-        },
-        [this]() -> std::optional<Node> {
-            return list();
-        },
-    };
-}
+{}
 
 void Parser::parse()
 {
@@ -69,15 +36,55 @@ std::optional<Node> Parser::node()
     // save current position in buffer to be able to go back if needed
     auto position = getCount();
 
-    for (std::size_t i = 0, end = m_node_parsers.size(); i < end; ++i)
-    {
-        auto result = m_node_parsers[i]();
+    if (auto result = wrapped(&Parser::letMutSet, "let/mut/set", '(', ')'))
+        return result;
+    else
+        backtrack(position);
 
-        if (result.has_value())
-            return result;
-        else
-            backtrack(position);
-    }
+    if (auto result = wrapped(&Parser::function, "function", '(', ')'))
+        return result;
+    else
+        backtrack(position);
+
+    if (auto result = wrapped(&Parser::condition, "condition", '(', ')'))
+        return result;
+    else
+        backtrack(position);
+
+    if (auto result = wrapped(&Parser::loop, "loop", '(', ')'))
+        return result;
+    else
+        backtrack(position);
+
+    if (auto result = import_(); result.has_value())
+        return result;
+    else
+        backtrack(position);
+
+    if (auto result = block(); result.has_value())
+        return result;
+    else
+        backtrack(position);
+
+    if (auto result = wrapped(&Parser::macro, "macro", '(', ')'))
+        return result;
+    else
+        backtrack(position);
+
+    if (auto result = wrapped(&Parser::del, "del", '(', ')'))
+        return result;
+    else
+        backtrack(position);
+
+    if (auto result = functionCall(); result.has_value())
+        return result;
+    else
+        backtrack(position);
+
+    if (auto result = list(); result.has_value())
+        return result;
+    else
+        backtrack(position);
 
     return std::nullopt;  // will never reach
 }
@@ -523,21 +530,16 @@ std::optional<Node> Parser::nodeOrValue()
     return std::nullopt;
 }
 
-std::optional<Node> Parser::wrapped(std::optional<Node> (Parser::*parser)(), char prefix, char suffix)
+std::optional<Node> Parser::wrapped(std::optional<Node> (Parser::*parser)(), const std::string& name, char a, char b)
 {
-    if (!accept(IsChar(prefix)))
+    if (!prefix(a))
         return std::nullopt;
-    newlineOrComment();
 
-    std::optional<Node> node = (this->*parser)();
-
-    if (node)
+    if (auto result = (this->*parser)(); result.has_value())
     {
-        newlineOrComment();
-        if (accept(IsChar(suffix)))
-            return node;
-        else
-            errorWithNextToken("Missing '" + std::string(1, suffix) + "' after node");
+        if (!suffix(b))
+            errorMissingSuffix(b, name);
+        return result;
     }
 
     return std::nullopt;

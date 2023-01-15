@@ -75,6 +75,11 @@ void BaseParser::errorWithNextToken(const std::string& message)
     error(message, next_token);
 }
 
+void BaseParser::errorMissingSuffix(char suffix, const std::string& node_name)
+{
+    errorWithNextToken("Missing '" + std::string(1, suffix) + "' after " + node_name);
+}
+
 bool BaseParser::accept(const CharPred& t, std::string* s)
 {
     if (isEOF())
@@ -166,6 +171,20 @@ bool BaseParser::newlineOrComment()
     }
 
     return matched;
+}
+
+bool BaseParser::prefix(char c)
+{
+    if (!accept(IsChar(c)))
+        return false;
+    newlineOrComment();
+    return true;
+}
+
+bool BaseParser::suffix(char c)
+{
+    newlineOrComment();
+    return accept(IsChar(c));
 }
 
 bool BaseParser::number(std::string* s)
