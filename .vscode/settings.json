@@ -78,6 +78,8 @@
         "random": "cpp",
         "regex": "cpp",
         "set": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "memory_resource": "cpp",
+        "version": "cpp"
     }
 }

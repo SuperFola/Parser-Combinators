@@ -74,6 +74,8 @@ protected:
     bool space(std::string* s = nullptr);
     bool inlineSpace(std::string* s = nullptr);
     bool endOfLine(std::string* s = nullptr);
+    bool comment();
+    bool newlineOrComment();
     bool number(std::string* s = nullptr);
     bool signedNumber(std::string* s = nullptr);
     bool name(std::string* s = nullptr);

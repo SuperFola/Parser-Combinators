@@ -64,30 +64,6 @@ const Node& Parser::ast() const
     return m_ast;
 }
 
-bool Parser::comment()
-{
-    if (accept(IsChar('#')))
-    {
-        while (accept(IsNot(IsChar('\n'))))
-            ;
-        accept(IsChar('\n'));
-        return true;
-    }
-    return false;
-}
-
-bool Parser::newlineOrComment()
-{
-    bool matched = space();
-    while (!isEOF() && comment())
-    {
-        space();
-        matched = true;
-    }
-
-    return matched;
-}
-
 std::optional<Node> Parser::node()
 {
     // save current position in buffer to be able to go back if needed
