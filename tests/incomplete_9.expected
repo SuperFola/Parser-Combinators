@@ -1,0 +1,5 @@
+ERROR
+Missing '"' after string
+At EOF @ 1:15
+    1 | (let a "1 2 3)
+      |              ^

@@ -4,6 +4,7 @@
 #include <array>
 #include <string>
 #include <utility>
+#include <limits>
 
 class utf8_char_t
 {
