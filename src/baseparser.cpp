@@ -27,15 +27,13 @@ void BaseParser::next()
     m_next_it = it;
     m_sym = sym;
 
-    // TODO reimplement BaseParser::next()
-    // char previous_sym = m_count > 0 ? m_str[m_count - 1] : 0;
-    // if (previous_sym == '\n')
-    // {
-    //     ++m_row;
-    //     m_col = 0;
-    // }
-    // else if (0 <= m_sym && std::isprint(previous_sym))
-    //     ++m_col;
+    if (*m_it == '\n')
+    {
+        ++m_row;
+        m_col = 0;
+    }
+    else if (m_sym.isPrintable())
+        m_col += m_sym.size();
 }
 
 void BaseParser::backtrack(long n)
@@ -47,20 +45,25 @@ void BaseParser::backtrack(long n)
     m_next_it = it;
     m_sym = sym;
 
-    // TODO reimplement BaseParser::backtrack()
-    // m_row = 0;
-    // m_col = 0;
-    // // adjust the row/col count (this is going to be VERY inefficient)
-    // for (std::size_t i = 0; i < n; ++i)
-    // {
-    //     if (m_str[i] == '\n')
-    //     {
-    //         ++m_row;
-    //         m_col = 0;
-    //     }
-    //     else if (0 <= m_str[i] && std::isprint(m_str[i]))
-    //         ++m_col;
-    // }
+    m_row = 0;
+    m_col = 0;
+    // adjust the row/col count (this is going to be VERY inefficient)
+    auto tmp = m_str.begin();
+    while (true)
+    {
+        auto [it2, sym2] = utf8_char_t::at(tmp);
+        if (*tmp == '\n')
+        {
+            ++m_row;
+            m_col = 0;
+        }
+        else if (sym2.isPrintable())
+            m_col += m_sym.size();
+        tmp = it2;
+
+        if (tmp > m_it)
+            break;
+    }
 }
 
 void BaseParser::error(const std::string& error, const std::string exp)

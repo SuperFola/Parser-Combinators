@@ -59,6 +59,13 @@ public:
                               utf8_char_t(codepoint, length, std::move(repr)));
     }
 
+    bool isPrintable() const
+    {
+        if (m_codepoint < std::numeric_limits<char>::max())
+            return std::isprint(m_codepoint);
+        return true;
+    }
+
     const char* c_str() const { return reinterpret_cast<const char*>(m_repr.data()); }
     std::size_t size() const { return static_cast<std::size_t>(m_length); }
     codepoint_t codepoint() const { return m_codepoint; }
