@@ -21,6 +21,8 @@ BaseParser::BaseParser(const std::string& s) :
 void BaseParser::next()
 {
     m_it = m_next_it;
+    if (isEOF())
+        return;
 
     // getting a character from the stream
     auto [it, sym] = utf8_char_t::at(m_it);
