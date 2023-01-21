@@ -80,6 +80,8 @@ private:
 
                 if (accept(IsChar('"')))
                     break;
+                else if (isEOF())
+                    errorMissingSuffix('"', "string");
                 // accept(\Uxxxxx)
                 // accept(\uxxxxx)
             }
