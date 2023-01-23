@@ -37,6 +37,9 @@ void BaseParser::backtrack(long n)
 {
     backtrack_count++;
 
+    if (static_cast<std::size_t>(n) >= m_str.size())
+        return;
+
     m_it = m_str.begin() + n;
     auto [it, sym] = utf8_char_t::at(m_it);
     m_next_it = it;
