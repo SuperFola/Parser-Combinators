@@ -61,7 +61,7 @@ FilePosition BaseParser::getCursor()
             pos.col += sym.size();
         tmp = it;
 
-        if (tmp > m_it)
+        if (tmp > m_it || tmp == m_str.end())
             break;
     }
 
