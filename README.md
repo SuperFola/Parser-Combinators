@@ -39,8 +39,8 @@ Subparsers:
   - [x] handle nodes as body
 - [x] atom
   - [x] number
-    - [ ] floating point 1.2
-    - [ ] scientific numbers 12e+14, 4.5e+16
+    - [x] floating point 1.2
+    - [x] scientific numbers 12e+14, 4.5e+16
   - [x] string
     - [ ] handle `\uxxxxx`, `\Uxxxxx`, `\xabc` in strings
     - [x] handle other espace sequences: n, r, t, a, b, f, 0, \, "
