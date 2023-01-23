@@ -1,6 +1,6 @@
 ERROR
 let needs a symbol
-At t @ 2:4
+At EOF @ 2:4
     1 | (
     2 | let
       |   ^

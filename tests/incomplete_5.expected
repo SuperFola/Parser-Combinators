@@ -1,5 +1,5 @@
 ERROR
 Import expected a package name
-At ) @ 1:9
+At EOF @ 1:9
     1 | (import)
       |        ^

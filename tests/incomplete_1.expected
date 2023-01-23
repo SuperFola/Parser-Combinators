@@ -1,6 +1,6 @@
 ERROR
 Missing ')' after condition
-At '\n' @ 2:1
+At EOF @ 2:1
     1 | (if 1 2 3
     2 | 
       | ^

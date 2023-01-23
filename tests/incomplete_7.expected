@@ -1,5 +1,5 @@
 ERROR
 Expected a value
-At ) @ 1:15
+At EOF @ 1:15
     1 | (fun (a b &c))
       |              ^

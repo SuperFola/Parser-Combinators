@@ -219,7 +219,7 @@ std::optional<Node> Parser::import_()
     Node symbols(NodeType::List);
 
     // first, parse the package name
-    while (true)
+    while (!isEOF())
     {
         // parsing package folder.foo.bar.yes
         if (accept(IsChar('.')))
@@ -247,7 +247,7 @@ std::optional<Node> Parser::import_()
     // then parse the symbols to import, it any
     if (newlineOrComment())
     {
-        while (true)
+        while (!isEOF())
         {
             if (accept(IsChar(':')))  // parsing potential :a :b :c
             {
@@ -295,7 +295,7 @@ std::optional<Node> Parser::block()
     Node leaf(NodeType::List);
     leaf.push_back(Node(NodeType::Keyword, "begin"));
 
-    while (true)
+    while (!isEOF())
     {
         if (auto value = nodeOrValue(); value.has_value())
         {
@@ -324,7 +324,7 @@ std::optional<Node> Parser::function()
     Node args(NodeType::List);
     bool has_captures = false;
 
-    while (true)
+    while (!isEOF())
     {
         if (accept(IsChar('&')))  // captures
         {
@@ -394,7 +394,7 @@ std::optional<Node> Parser::macro()
         newlineOrComment();
         Node args = Node(NodeType::List);
 
-        while (true)
+        while (!isEOF())
         {
             std::string arg_name;
             if (!name(&arg_name))
@@ -438,7 +438,7 @@ std::optional<Node> Parser::functionCall()
     Node leaf(NodeType::List);
     leaf.push_back(func.value());
 
-    while (true)
+    while (!isEOF())
     {
         if (auto arg = nodeOrValue(); arg.has_value())
         {
@@ -463,7 +463,7 @@ std::optional<Node> Parser::list()
     Node leaf(NodeType::List);
     leaf.push_back(Node(NodeType::Symbol, "list"));
 
-    while (true)
+    while (!isEOF())
     {
         if (auto value = nodeOrValue(); value.has_value())
         {
