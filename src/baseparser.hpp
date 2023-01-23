@@ -24,8 +24,8 @@ struct ParseError : public std::runtime_error
 
 struct FilePosition
 {
-    std::size_t row = 0;
-    std::size_t col = 0;
+    std::size_t row;
+    std::size_t col;
 };
 
 class BaseParser

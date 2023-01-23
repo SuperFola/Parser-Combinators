@@ -3,6 +3,7 @@
 
 #include "baseparser.hpp"
 #include "node.hpp"
+#include "utils.hpp"
 
 #include <string>
 #include <optional>
@@ -37,7 +38,13 @@ private:
     {
         std::string res;
         if (signedNumber(&res))
-            return Node(std::stoi(res));  // FIXME is using stoi to create a number a good idea?
+        {
+            double output;
+            if (Utils::isDouble(res, &output))
+                return Node(output);
+            else
+                error("Is not a valid number", res);
+        }
         return std::nullopt;
     }
 

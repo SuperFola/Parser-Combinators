@@ -45,21 +45,21 @@ void BaseParser::backtrack(long n)
 
 FilePosition BaseParser::getCursor()
 {
-    FilePosition pos;
+    FilePosition pos { 0, 0 };
 
     // adjust the row/col count (this is going to be VERY inefficient)
     auto tmp = m_str.begin();
     while (true)
     {
-        auto [it2, sym2] = utf8_char_t::at(tmp);
+        auto [it, sym] = utf8_char_t::at(tmp);
         if (*tmp == '\n')
         {
             ++pos.row;
             pos.col = 0;
         }
-        else if (sym2.isPrintable())
-            pos.col += m_sym.size();
-        tmp = it2;
+        else if (sym.isPrintable())
+            pos.col += sym.size();
+        tmp = it;
 
         if (tmp > m_it)
             break;
@@ -208,7 +208,12 @@ bool BaseParser::number(std::string* s)
 
 bool BaseParser::signedNumber(std::string* s)
 {
-    return accept(IsMinus, s), number(s);
+    accept(IsMinus, s);
+    if (!number(s))
+        return false;
+
+    accept(IsEither(IsChar('e'), IsChar('E')), s) && accept(IsEither(IsMinus, IsChar('+')), s) && number(s);
+    return true;
 }
 
 bool BaseParser::name(std::string* s)

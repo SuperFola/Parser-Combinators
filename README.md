@@ -39,6 +39,8 @@ Subparsers:
   - [x] handle nodes as body
 - [x] atom
   - [x] number
+    - [ ] floating point 1.2
+    - [ ] scientific numbers 12e+14, 4.5e+16
   - [x] string
     - [ ] handle `\uxxxxx`, `\Uxxxxx`, `\xabc` in strings
     - [x] handle other espace sequences: n, r, t, a, b, f, 0, \, "
@@ -73,10 +75,10 @@ At ' ' @ 1:12
 ```
 
 Misc:
-- [ ] handle UTF-8
-  - [ ] store codepoints in `struct { unsigned int cp; std::string repr; };`
-  - [ ] homemade `std::is"char category"(codepoint)`
-  - [ ] decode UTF8 to calculate correctly the columns
+- [x] handle UTF-8
+  - [x] store codepoints in `struct { unsigned int cp; std::string repr; };`
+  - [x] homemade `std::is"char category"(codepoint)`
+  - [x] decode UTF8 to calculate correctly the columns
 
 ## Breaking changes
 
