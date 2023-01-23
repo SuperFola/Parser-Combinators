@@ -1,0 +1,7 @@
+( Keyword:let Symbol:a Number:1.2 )
+( Keyword:let Symbol:b Number:-3.4 )
+( Keyword:let Symbol:c Number:-0 )
+( Keyword:let Symbol:d Number:10000 )
+( Keyword:let Symbol:e Number:2e+08 )
+( Keyword:let Symbol:f Number:4e-16 )
+( Keyword:let Symbol:g Number:8.91e-31 )

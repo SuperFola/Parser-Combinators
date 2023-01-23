@@ -212,7 +212,11 @@ bool BaseParser::signedNumber(std::string* s)
     if (!number(s))
         return false;
 
-    accept(IsEither(IsChar('e'), IsChar('E')), s) && accept(IsEither(IsMinus, IsChar('+')), s) && number(s);
+    // (optional) floting part
+    accept(IsChar('.'), s) && number(s);
+    // (optional) scientific part
+    accept(IsEither(IsChar('e'), IsChar('E')), s) && (accept(IsEither(IsMinus, IsChar('+')), s) | number(s));
+
     return true;
 }
 
