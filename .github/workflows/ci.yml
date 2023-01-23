@@ -269,12 +269,14 @@ jobs:
           afl-showmap -C -i output -o /dev/null -- ./${BUILD_FOLDER}/parser @@ -debug
 
       - name: Sort files for upload
+        continue-on-error: true
         run: |
           mkdir crashes
           cp output/default/crashes/id:* crashes/
           tar -czvf crashes.tar.gz crashes
 
       - name: Upload crashes
+        continue-on-error: true
         uses: actions/upload-artifact@v3
         with:
           name: crashes
