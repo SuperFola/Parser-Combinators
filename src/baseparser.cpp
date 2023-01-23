@@ -76,8 +76,12 @@ void BaseParser::error(const std::string& error, const std::string exp)
 
 void BaseParser::errorWithNextToken(const std::string& message)
 {
+    auto pos = getCount();
     std::string next_token;
+
     anyUntil(IsInlineSpace, &next_token);
+    backtrack(pos);
+
     error(message, next_token);
 }
 
