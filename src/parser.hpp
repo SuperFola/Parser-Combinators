@@ -36,6 +36,8 @@ private:
 
     inline std::optional<Node> number()
     {
+        auto pos = getCount();
+
         std::string res;
         if (signedNumber(&res))
         {
@@ -43,7 +45,10 @@ private:
             if (Utils::isDouble(res, &output))
                 return Node(output);
             else
+            {
+                backtrack(pos);
                 error("Is not a valid number", res);
+            }
         }
         return std::nullopt;
     }

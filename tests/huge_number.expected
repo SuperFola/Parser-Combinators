@@ -1,5 +1,5 @@
 ERROR
 Is not a valid number
-At ) @ 1:12
+At 1 @ 1:9
     1 | (let a 1e+4932)
-      |           ^^^^
+      |        ^^^^^^^^
