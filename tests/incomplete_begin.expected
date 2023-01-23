@@ -1,0 +1,5 @@
+ERROR
+Expected '}'
+At EOF @ 1:16
+    1 | { a b (let c d)
+      |               ^

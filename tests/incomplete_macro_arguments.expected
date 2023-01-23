@@ -1,0 +1,5 @@
+ERROR
+Expected ')'
+At EOF @ 1:14
+    1 | (macro foo (a
+      |             ^
