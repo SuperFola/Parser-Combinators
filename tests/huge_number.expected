@@ -1,0 +1,5 @@
+ERROR
+Is not a valid number
+At ) @ 1:16
+    1 | (let a 1e+4932)
+      |               ^
