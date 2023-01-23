@@ -1,0 +1,5 @@
+ERROR
+Expected ')'
+At EOF @ 1:8
+    1 | (fun (a
+      |       ^

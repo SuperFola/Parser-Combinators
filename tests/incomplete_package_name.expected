@@ -1,0 +1,5 @@
+ERROR
+Package name expected after '.'
+At EOF @ 1:13
+    1 | (import a.b.
+      |            ^

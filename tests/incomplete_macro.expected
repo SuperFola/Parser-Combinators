@@ -1,0 +1,5 @@
+ERROR
+macro needs a symbol
+At ' ' @ 1:12
+    1 | (macro (a) a)
+      |           ^^^
