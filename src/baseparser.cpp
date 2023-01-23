@@ -3,7 +3,7 @@
 #include <iostream>
 
 BaseParser::BaseParser(const std::string& s) :
-    backtrack_count(0), m_str(s), m_row(0), m_col(0)
+    backtrack_count(0), m_str(s)
 {
     // if the input string is empty, raise an error
     if (s.size() == 0)
@@ -31,14 +31,6 @@ void BaseParser::next()
     auto [it, sym] = utf8_char_t::at(m_it);
     m_next_it = it;
     m_sym = sym;
-
-    if (*m_it == '\n')
-    {
-        ++m_row;
-        m_col = 0;
-    }
-    else if (m_sym.isPrintable())
-        m_col += m_sym.size();
 }
 
 void BaseParser::backtrack(long n)
@@ -49,9 +41,12 @@ void BaseParser::backtrack(long n)
     auto [it, sym] = utf8_char_t::at(m_it);
     m_next_it = it;
     m_sym = sym;
+}
 
-    m_row = 0;
-    m_col = 0;
+FilePosition BaseParser::getCursor()
+{
+    FilePosition pos;
+
     // adjust the row/col count (this is going to be VERY inefficient)
     auto tmp = m_str.begin();
     while (true)
@@ -59,21 +54,24 @@ void BaseParser::backtrack(long n)
         auto [it2, sym2] = utf8_char_t::at(tmp);
         if (*tmp == '\n')
         {
-            ++m_row;
-            m_col = 0;
+            ++pos.row;
+            pos.col = 0;
         }
         else if (sym2.isPrintable())
-            m_col += m_sym.size();
+            pos.col += m_sym.size();
         tmp = it2;
 
         if (tmp > m_it)
             break;
     }
+
+    return pos;
 }
 
 void BaseParser::error(const std::string& error, const std::string exp)
 {
-    throw ParseError(error, m_row, m_col, exp, m_sym);
+    FilePosition pos = getCursor();
+    throw ParseError(error, pos.row, pos.col, exp, m_sym);
 }
 
 void BaseParser::errorWithNextToken(const std::string& message)
