@@ -1,5 +1,5 @@
 ERROR
 macro needs a symbol
-At ' ' @ 1:12
+At ( @ 1:9
     1 | (macro (a) a)
-      |           ^^^
+      |        ^^^^
