@@ -9,7 +9,6 @@
 #include <vector>
 #include <functional>
 
-// TODO move all the complexity from Parser to BaseParser
 class Parser : public BaseParser
 {
 public:
@@ -128,7 +127,7 @@ private:
     std::optional<Node> atom();
     std::optional<Node> anyAtomOf(std::initializer_list<NodeType> types);
     std::optional<Node> nodeOrValue();
-    std::optional<Node> wrapped(std::optional<Node> (Parser::*parser)(), const std::string& name, char prefix, char suffix);  // TODO decompose in wrapped_begin and wrapped_end?
+    std::optional<Node> wrapped(std::optional<Node> (Parser::*parser)(), const std::string& name, char prefix, char suffix);
 };
 
 #endif

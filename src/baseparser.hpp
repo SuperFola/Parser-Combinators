@@ -22,6 +22,12 @@ struct ParseError : public std::runtime_error
     {}
 };
 
+struct FilePosition
+{
+    std::size_t row = 0;
+    std::size_t col = 0;
+};
+
 class BaseParser
 {
 public:
@@ -33,8 +39,6 @@ public:
 private:
     std::string m_str;
     std::string::iterator m_it, m_next_it;
-    std::size_t m_row;
-    std::size_t m_col;
     utf8_char_t m_sym;
 
     /*
@@ -43,13 +47,12 @@ private:
     void next();
 
 protected:
+    FilePosition getCursor();
+
     void error(const std::string& error, const std::string exp);
     void errorWithNextToken(const std::string& message);
     void errorMissingSuffix(char suffix, const std::string& node_name);
 
-    // basic getters
-    inline std::size_t getCol() { return m_col; }
-    inline std::size_t getRow() { return m_row; }
     inline long getCount() { return std::distance(m_str.begin(), m_it); }
     inline std::size_t getSize() { return m_str.size(); }
     inline bool isEOF() { return m_it == m_str.end(); }
