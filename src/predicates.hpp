@@ -98,8 +98,11 @@ inline struct IsPrint : public CharPred
 
 struct IsChar : public CharPred
 {
-    explicit IsChar(const utf8_char_t::codepoint_t c) :
-        CharPred((0 <= c && c <= 255) ? ("'" + std::string(1, static_cast<char>(c)) + "'") : ("'utf8char'")), m_k(c)  // FIXME replace "utf8char" by the char itself?
+    explicit IsChar(const char c) :
+        CharPred("'" + std::string(1, c) + "'"), m_k(c)
+    {}
+    explicit IsChar(const utf8_char_t c) :
+        CharPred(std::string(c.c_str())), m_k(c.codepoint())
     {}
     virtual bool operator()(const utf8_char_t::codepoint_t c) const override
     {
