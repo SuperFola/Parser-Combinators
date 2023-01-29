@@ -242,6 +242,16 @@ bool BaseParser::name(std::string* s)
     return false;
 }
 
+bool BaseParser::sequence(const std::string& s)
+{
+    for (std::size_t i = 0, end = s.size(); i < end; ++i)
+    {
+        if (!accept(IsChar(s[i])))
+            return false;
+    }
+    return true;
+}
+
 bool BaseParser::packageName(std::string* s)
 {
     if (accept(IsAlnum, s))

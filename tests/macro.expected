@@ -4,3 +4,5 @@
 ( Keyword:macro Symbol:f ( Symbol:g ) Number:4 )
 ( Keyword:macro Symbol:h ( Symbol:i Symbol:j ) ( Keyword:let Symbol:a Number:1 ) )
 ( Keyword:macro Symbol:h ( Symbol:i Symbol:j ) ( Keyword:let Symbol:a ( Keyword:if Symbol:i Number:2 Number:3 ) ) )
+( Keyword:macro Symbol:k ( Symbol:l Spread:m ) ( Symbol:print Symbol:l Symbol:m ) )
+( Keyword:macro Symbol:n ( Spread:p ) ( Symbol:print Symbol:p ) )

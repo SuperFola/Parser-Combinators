@@ -12,3 +12,7 @@ e
 (macro h(i j) (let a 1))
 
 (macro h (i j) (let a (if i 2 3)))
+(macro k (l ...m) (print l m))
+(macro n (
+...p
+) (print p))

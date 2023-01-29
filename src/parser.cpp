@@ -402,6 +402,15 @@ std::optional<Node> Parser::macro()
             }
         }
 
+        if (sequence("..."))
+        {
+            std::string spread_name;
+            if (!name(&spread_name))
+                errorWithNextToken("Expected a name for the variadic arguments list");
+            args.push_back(Node(NodeType::Spread, spread_name));
+            newlineOrComment();
+        }
+
         expect(IsChar(')'));
         newlineOrComment();
 
