@@ -1,0 +1,5 @@
+ERROR
+Expected a name for the variadic arguments list
+At ) @ 1:21
+    1 | (macro foo (bar ...) (bar))
+      |                    ^^
