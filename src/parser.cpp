@@ -194,10 +194,6 @@ std::optional<Node> Parser::loop()
 
 std::optional<Node> Parser::import_()
 {
-    // (import a)
-    // (import a:*)
-    // (import foo.bar.egg :a :b :c)
-
     if (!accept(IsChar('(')))
         return std::nullopt;
     newlineOrComment();

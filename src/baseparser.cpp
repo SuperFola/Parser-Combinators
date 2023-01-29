@@ -3,7 +3,7 @@
 #include <iostream>
 
 BaseParser::BaseParser(const std::string& s) :
-    backtrack_count(0), m_str(s)
+    m_str(s)
 {
     // if the input string is empty, raise an error
     if (s.size() == 0)
@@ -35,8 +35,6 @@ void BaseParser::next()
 
 void BaseParser::backtrack(long n)
 {
-    backtrack_count++;
-
     if (static_cast<std::size_t>(n) >= m_str.size())
         return;
 
@@ -219,7 +217,7 @@ bool BaseParser::signedNumber(std::string* s)
     if (!number(s))
         return false;
 
-    // (optional) floting part
+    // (optional) floating part
     accept(IsChar('.'), s) && number(s);
     // (optional) scientific part
     if (accept(IsEither(IsChar('e'), IsChar('E')), s))

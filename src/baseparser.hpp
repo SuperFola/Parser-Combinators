@@ -33,9 +33,6 @@ class BaseParser
 public:
     BaseParser(const std::string& s);
 
-    // for debug purpose
-    unsigned long backtrack_count;
-
 private:
     std::string m_str;
     std::string::iterator m_it, m_next_it;

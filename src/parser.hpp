@@ -93,8 +93,7 @@ private:
                     break;
                 else if (isEOF())
                     errorMissingSuffix('"', "string");
-                // accept(\Uxxxxx)
-                // accept(\uxxxxx)
+                // TODO accept(\Uxxxxx), accept(\uxxxxx)
             }
 
             return Node(NodeType::String, res);

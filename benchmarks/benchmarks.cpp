@@ -22,7 +22,6 @@ static void BM_Parse(benchmark::State& state)
     const std::string code = readFile(filename);
 
     long long nodes = 0;
-    long long backtracks = 0;
 
     for (auto _ : state)
     {
@@ -30,14 +29,10 @@ static void BM_Parse(benchmark::State& state)
         parser.parse();
 
         nodes += parser.ast().list().size();
-        backtracks += parser.backtrack_count;
     }
 
     state.counters["nodesRate"] = benchmark::Counter(nodes, benchmark::Counter::kIsRate);
     state.counters["nodesAvg"] = benchmark::Counter(nodes, benchmark::Counter::kAvgThreads);
-    state.counters["backtracksRate"] = benchmark::Counter(backtracks, benchmark::Counter::kIsRate);
-    state.counters["backtracksAvg"] = benchmark::Counter(backtracks, benchmark::Counter::kAvgThreads);
-    state.counters["backtracksPerNode"] = benchmark::Counter(backtracks / nodes);
 }
 
 BENCHMARK(BM_Parse)->Name("New parser - Simple - 39 nodes")->Arg(simple)->Unit(benchmark::kMillisecond);
