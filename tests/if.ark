@@ -12,5 +12,7 @@
             2) #1
 (if 1 2)
 
+(if 3 ())
+
 (if (func a b) a b)
 (if (a b c) (d e) (f))

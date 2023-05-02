@@ -508,6 +508,11 @@ std::optional<Node> Parser::atom()
     else
         backtrack(pos);
 
+    if (auto res = Parser::nil(); res.has_value())
+        return res;
+    else
+        backtrack(pos);
+
     return std::nullopt;
 }
 

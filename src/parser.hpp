@@ -135,6 +135,17 @@ private:
         return Node(NodeType::Symbol, res);
     }
 
+    inline std::optional<Node> nil()
+    {
+        if (!accept(IsChar('(')))
+            return std::nullopt;
+        newlineOrComment();
+        if (!accept(IsChar(')')))
+            return std::nullopt;
+
+        return Node(NodeType::Symbol, "nil");
+    }
+
     std::optional<Node> atom();
     std::optional<Node> anyAtomOf(std::initializer_list<NodeType> types);
     std::optional<Node> nodeOrValue();

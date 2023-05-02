@@ -5,3 +5,5 @@
 ( Keyword:fun ( Symbol:a Symbol:b ) ( Keyword:if Number:1 Number:2 Number:3 ) )
 ( Keyword:fun ( Symbol:a Symbol:b ) ( Keyword:let Symbol:c ( Keyword:if Number:1 Number:2 Number:3 ) ) )
 ( ( Keyword:fun ( Symbol:a ) Symbol:a ) Number:1 )
+( Keyword:fun ( ) Symbol:nil )
+( Keyword:fun ( Symbol:a ) Symbol:nil )
